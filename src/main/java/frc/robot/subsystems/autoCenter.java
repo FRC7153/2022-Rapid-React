@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -9,7 +8,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.math.controller.PIDController;
 
 public class autoCenter {
-    private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-toast");
+    private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     private NetworkTableEntry ty = table.getEntry("ty"); 
     private NetworkTableEntry tx = table.getEntry("tx");
     private NetworkTableEntry tv = table.getEntry("tv");
@@ -62,8 +61,11 @@ public class autoCenter {
     }
 
     public double getSuggestedSpeed() {
-        double s = (-37.661*getY()) + 4916;
-        return s - 25;
+        //double s = (-37.661*getY()) + 4916;
+        //return s - 2300; // 25
+
+        //return (-86.4422 * getY()) + 1400;
+        return 8919.0 + (1010.0 * getY()) + (39.04 * (getY()*getY()));
     }
 
     public boolean isInTarget() {

@@ -55,6 +55,7 @@ import java.util.Map;
 
 import javax.swing.Spring;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
@@ -254,7 +255,7 @@ public class Robot extends TimedRobot {
       if (FXNJoy.getThrottle() > 0) {
         // Low goal
         SmartDashboard.putString("Goal", "low");
-        shootPID.setSpeed(2200.0);
+        shootPID.setSpeed(3800.0); // 2200
       } else {
         // High goal
         SmartDashboard.putString("Goal", "high");
@@ -285,9 +286,11 @@ public class Robot extends TimedRobot {
     RelativeEncoder[] test_encoders;
     Double[] test_startRotations;
 
+    private NetworkTableEntry testSpeedEntry = Shuffleboard.getTab("Shoot Test").add("Speed RPM", 0.0).getEntry();
+
     @Override
     public void testInit() {
-      test_encoders = new RelativeEncoder[] {
+      /*test_encoders = new RelativeEncoder[] {
         frontLeftSpark.getEncoder(),
         frontRightSpark.getEncoder(),
         rearLeftSpark.getEncoder(),
@@ -301,12 +304,12 @@ public class Robot extends TimedRobot {
         test_encoders[3].getPosition()
       };
 
-      m_robotDrive.driveCartesian(-0.4, 0.0, 0.0);
+      m_robotDrive.driveCartesian(-0.4, 0.0, 0.0);*/
     }
 
     @Override
     public void testPeriodic() {
-      double dist = Math.abs(
+      /*double dist = Math.abs(
         (test_encoders[0].getPosition()-test_startRotations[0]) +
         (test_encoders[1].getPosition()-test_startRotations[1]) +
         (test_encoders[2].getPosition()-test_startRotations[2]) +
@@ -317,7 +320,10 @@ public class Robot extends TimedRobot {
         m_robotDrive.driveCartesian(0.0, 0.0, 0.0);
       } else {
         m_robotDrive.driveCartesian(-0.4, 0.0, 0.0);
-      }
+      }*/
+
+      shootPID.setSpeed(testSpeedEntry.getDouble(0.0));
+      FALCONCODE.motor.set(ControlMode.PercentOutput, 0.85);
     }
 }
 //           :) (: 
