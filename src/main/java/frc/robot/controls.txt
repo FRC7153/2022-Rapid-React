@@ -1,0 +1,22 @@
+## CONTROLS ##
+
+this is mostly outdated 
+mostly.
+-j
+
+Joystick 0
+X/Y: Driving
+
+Joystick 1
+Z: spin
+Trigger pull: intake down 
+slider : increase MAX SPEED OF ROBOT
+
+Joystick 2:
+Trigger: Shoot & indexer
+6: Arms up
+4: Arms down
+11: Green wheel reverse
+12: Intake wheel reverse
+
+:)
