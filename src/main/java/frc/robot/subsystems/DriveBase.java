@@ -9,7 +9,7 @@ import frc.robot.Constants.DriveBaseConstants;
 import frc.robot.Constants.HardwareConstants;
 
 public class DriveBase extends SubsystemBase {
-    // Motors
+    // Hardware
     private CANSparkMax wheel_fl = new CANSparkMax(HardwareConstants.FL_DRIVE_CAN, MotorType.kBrushless);
     private CANSparkMax wheel_fr = new CANSparkMax(HardwareConstants.FR_DRIVE_CAN, MotorType.kBrushless);
     private CANSparkMax wheel_rl = new CANSparkMax(HardwareConstants.RL_DRIVE_CAN, MotorType.kBrushless);

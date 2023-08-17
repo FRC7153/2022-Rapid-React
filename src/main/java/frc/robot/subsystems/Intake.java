@@ -12,9 +12,22 @@ import frc.robot.Constants.IntakeConstants;
 public class Intake extends SubsystemBase {
     // Hardware
     private TalonSRX intakeWheel = new TalonSRX(HardwareConstants.INTAKE_WHEEL_CAN);
-    private DoubleSolenoid leftPiston = new DoubleSolenoid(HardwareConstants.INTAKE_PH_CAN, PneumaticsModuleType.CTREPCM, IntakeConstants.LEFT_IN_CHANNEL, IntakeConstants.LEFT_OUT_CHANNEL);
-    private DoubleSolenoid rightPiston = new DoubleSolenoid(HardwareConstants.INTAKE_WHEEL_CAN, PneumaticsModuleType.CTREPCM, IntakeConstants.RIGHT_IN_CHANNEL, IntakeConstants.RIGHT_OUT_CHANNEL);
+    
+    // Alex: these lines were kinda long, so I split them into multiple lines
+    private DoubleSolenoid leftPiston = new DoubleSolenoid(
+        HardwareConstants.INTAKE_PH_CAN, 
+        PneumaticsModuleType.CTREPCM, 
+        IntakeConstants.LEFT_IN_CHANNEL,
+        IntakeConstants.LEFT_OUT_CHANNEL
+    );
+    private DoubleSolenoid rightPiston = new DoubleSolenoid(
+        HardwareConstants.INTAKE_WHEEL_CAN, 
+        PneumaticsModuleType.CTREPCM, 
+        IntakeConstants.RIGHT_IN_CHANNEL, 
+        IntakeConstants.RIGHT_OUT_CHANNEL
+    );
 
+    // Intake Down
     public void intakeDown() {
         intakeWheel.set(TalonSRXControlMode.PercentOutput, IntakeConstants.INTAKE_WHEEL_SPEED);
 
@@ -22,6 +35,7 @@ public class Intake extends SubsystemBase {
         rightPiston.set(DoubleSolenoid.Value.kForward);
     } 
 
+    // Intake Up
     public void intakeUp() {
         intakeWheel.set(TalonSRXControlMode.PercentOutput, 0.0);
 
