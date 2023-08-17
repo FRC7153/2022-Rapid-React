@@ -24,7 +24,7 @@ public class Shooter extends SubsystemBase {
      * - Create a method that turns on/off the TalonFX (use the speed from 
      *      ShooterConstants)
      * 
-     * You will need to do configuration for the shooter motor. Remember, they
+     * You will need to do configuration for the shooter motors. Remember, they
      * are connected physically, so they need to spin together. See:
      * https://codedocs.revrobotics.com/java/com/revrobotics/cansparkmax#follow(com.revrobotics.CANSparkMax,boolean) 
      * 
