@@ -4,11 +4,30 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
 
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
+    
+    private CANSparkMax Shooter1 = new CANSparkMax(HardwareConstants.SHOOTER_1_CAN);
+    private CANSparkMax Shooter2 = new CANSparkMax(HardwareConstants.SHOOTER_2_CAN);
+
+    private TalonFX IndexerCan = new TalonFX(HardwareConstants.INDEXER_CAN);
+    
+    public void setSpeedCan(){
+
+    }
+
+    public void TalonOff(){
+            INDEXER_SPEED.set(0.0);
+    }
+
+    public void TalonOn(){
+        INDEXER_SPEED.set(0.85);
+    }
+
     /*
      * The shooter is made of two parts:
      * - The shooter, controlled by two CanSparkMax's that are connected
