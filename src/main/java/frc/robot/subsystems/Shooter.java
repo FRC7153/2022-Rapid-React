@@ -1,18 +1,19 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
     
-    private CANSparkMax Shooter1 = new CANSparkMax(HardwareConstants.SHOOTER_1_CAN);
-    private CANSparkMax Shooter2 = new CANSparkMax(HardwareConstants.SHOOTER_2_CAN);
+    private CANSparkMax Shooter1 = new CANSparkMax(HardwareConstants.SHOOTER_1_CAN, MotorType.kBrushless);
+    private CANSparkMax Shooter2 = new CANSparkMax(HardwareConstants.SHOOTER_2_CAN, MotorType.kBrushless);
 
     private TalonFX IndexerCan = new TalonFX(HardwareConstants.INDEXER_CAN);
     
@@ -21,11 +22,13 @@ public class Shooter extends SubsystemBase {
     }
 
     public void TalonOff(){
-            INDEXER_SPEED.set(0.0);
+        //INDEXER_SPEED.set(0.0);
+        IndexerCan.set(TalonFXControlMode.PercentOutput, 0.0);
     }
 
     public void TalonOn(){
-        INDEXER_SPEED.set(0.85);
+        //INDEXER_SPEED.set(0.85);
+        IndexerCan.set(TalonFXControlMode.PercentOutput, ShooterConstants.INDEXER_SPEED)
     }
 
     /*
