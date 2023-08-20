@@ -28,7 +28,7 @@ public class Shooter extends SubsystemBase {
 
     public void TalonOn(){
         //INDEXER_SPEED.set(0.85);
-        IndexerCan.set(TalonFXControlMode.PercentOutput, ShooterConstants.INDEXER_SPEED)
+        IndexerCan.set(TalonFXControlMode.PercentOutput, ShooterConstants.INDEXER_SPEED);
     }
 
     /*
