@@ -10,10 +10,10 @@ import frc.robot.Constants.HardwareConstants;
 
 public class Climber extends SubsystemBase {
     private DoubleSolenoid leftClimber = new DoubleSolenoid(
-        HardwareConstants.CLIMBER_PH_CAN,
-        PneumaticsModuleType.REVPH, 
-        ClimberConstants.LEFT_UP_CHANNEL,
-        ClimberConstants.LEFT_DOWN_CHANNEL
+        HardwareConstants.CLIMBER_PH_CAN,   // Pneumatic hub CAN id
+        PneumaticsModuleType.REVPH,         // This is a REV Pneumatics hub
+        ClimberConstants.LEFT_UP_CHANNEL,   // The channel that makes it go up
+        ClimberConstants.LEFT_DOWN_CHANNEL  // The channel that makes it go down
     );
     // TODO: Create right climber solenoid (similar to above)
 
