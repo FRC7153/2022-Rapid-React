@@ -22,12 +22,20 @@ public class Constants {
         public static final double SHOOT_I = 6e-7;
         public static final double SHOOT_D = 0.00002;
     }
+
+    public static final class ClimberConstants {
+        public static final int LEFT_UP_CHANNEL = 3;
+        public static final int LEFT_DOWN_CHANNEL = 2;
+        public static final int RIGHT_UP_CHANNEL = 0;
+        public static final int RIGHT_DOWN_CHANNEL = 0;
+    }
+
     public static final class HardwareConstants {
         // Drive base
         public static final int FL_DRIVE_CAN = 3;
         public static final int FR_DRIVE_CAN = 4;
-        public static final int RL_DRIVE_CAN = 5;
-        public static final int RR_DRIVE_CAN = 6;
+        public static final int RL_DRIVE_CAN = 1;
+        public static final int RR_DRIVE_CAN = 0;
 
         // Intake
         public static final int INTAKE_PH_CAN = 12;
@@ -37,5 +45,8 @@ public class Constants {
         public static final int INDEXER_CAN = 10;
         public static final int SHOOTER_1_CAN = 7;
         public static final int SHOOTER_2_CAN = 8;
+
+        // Climber
+        public static final int CLIMBER_PH_CAN = 2;
     }
 }
