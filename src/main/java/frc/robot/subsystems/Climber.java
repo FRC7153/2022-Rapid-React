@@ -17,6 +17,13 @@ public class Climber extends SubsystemBase {
     );
     // TODO: Create right climber solenoid (similar to above)
 
+    private DoubleSolenoid rightClimber = new DoubleSolenoid(
+        HardwareConstants.CLIMBER_PH_CAN, 
+        PneumaticsModuleType.REVPH,
+        ClimberConstants.RIGHT_UP_CHANNEL,
+        ClimberConstants.RIGHT_DOWN_CHANNEL
+    );
+
     // The compressor
     private Compressor compressor = new Compressor(
         HardwareConstants.CLIMBER_PH_CAN, 
@@ -28,10 +35,10 @@ public class Climber extends SubsystemBase {
         // TODO: in the blank lines, add code to control the right solenoid
         if (up) {
             leftClimber.set(Value.kForward);
-
+            rightClimber.set(Value.kForward);
         } else {
             leftClimber.set(Value.kReverse);
-
+            rightClimber.set(Value.kReverse);
         }
     }
 
