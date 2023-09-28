@@ -45,12 +45,10 @@ public class Shooter extends SubsystemBase {
 
     // Indexer
     public void indexerOff(){
-        //INDEXER_SPEED.set(0.0);
         indexerCan.set(TalonFXControlMode.PercentOutput, 0.0);
     }
 
     public void indexerOn(){
-        //INDEXER_SPEED.set(0.85);
         indexerCan.set(TalonFXControlMode.PercentOutput, ShooterConstants.INDEXER_SPEED);
     }
 }

@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveBaseConstants;
@@ -16,15 +19,33 @@ public class DriveBase extends SubsystemBase {
     private CANSparkMax wheel_rr = new CANSparkMax(HardwareConstants.RR_DRIVE_CAN, MotorType.kBrushless);
 
     // Drive
-    private MecanumDrive mecDrive = new MecanumDrive(wheel_fl, wheel_fr, wheel_rl, wheel_rr);
+    private MecanumDrive mecDrive;
     private double maxSpeed = DriveBaseConstants.SLOW_MAX_SPEED;
+
+    // IMU
+    private AHRS gyro = new AHRS(SPI.Port.kMXP);
+
+    // Constructor
+    public DriveBase() {
+        gyro.calibrate();
+        gyro.reset();
+
+        // These are inverted
+        wheel_fr.setInverted(true);
+        wheel_rl.setInverted(true);
+
+        // Init drive base
+        mecDrive = new MecanumDrive(wheel_fl, wheel_fr, wheel_rl, wheel_rr);
+    }
 
     // Drive Method
     public void drive(double y, double x, double rot) {
-        x *= maxSpeed;
+        // Note the axes that are inverted below
+        x *= -maxSpeed;
         y *= maxSpeed;
-        rot *= maxSpeed;
+        rot *= -maxSpeed;
         
+        //mecDrive.driveCartesian(x, y, rot, Rotation2d.fromDegrees(gyro.getPitch()));
         mecDrive.driveCartesian(x, y, rot);
     }
 

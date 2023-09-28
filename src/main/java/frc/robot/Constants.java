@@ -21,6 +21,14 @@ public class Constants {
         public static final double SHOOT_P = 0.00008;
         public static final double SHOOT_I = 6e-7;
         public static final double SHOOT_D = 0.00002;
+
+        public static final double INDEXER_TIMEOUT = 0.9;
+    }
+
+    public static final class TrajectoryConstants {
+        public static final double TARGET_REGRESSION(double y) {
+            return 8919.0 + (1010.0 * y) + (39.04 * (y*y));
+        }
     }
 
     public static final class ClimberConstants {
@@ -34,8 +42,8 @@ public class Constants {
         // Drive base
         public static final int FL_DRIVE_CAN = 3;
         public static final int FR_DRIVE_CAN = 4;
-        public static final int RL_DRIVE_CAN = 1;
-        public static final int RR_DRIVE_CAN = 0;
+        public static final int RL_DRIVE_CAN = 5;
+        public static final int RR_DRIVE_CAN = 6;
 
         // Intake
         public static final int INTAKE_PH_CAN = 12;

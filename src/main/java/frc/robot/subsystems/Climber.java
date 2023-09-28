@@ -15,7 +15,6 @@ public class Climber extends SubsystemBase {
         ClimberConstants.LEFT_UP_CHANNEL,   // The channel that makes it go up
         ClimberConstants.LEFT_DOWN_CHANNEL  // The channel that makes it go down
     );
-    // TODO: Create right climber solenoid (similar to above)
 
     private DoubleSolenoid rightClimber = new DoubleSolenoid(
         HardwareConstants.CLIMBER_PH_CAN, 
@@ -32,8 +31,8 @@ public class Climber extends SubsystemBase {
 
     // Set climber
     public void setClimberState(boolean up) {
-        // TODO: in the blank lines, add code to control the right solenoid
-        if (up) {
+        System.out.println("CLIMBER COMMANDED TO");
+        if (!up) {
             leftClimber.set(Value.kForward);
             rightClimber.set(Value.kForward);
         } else {
