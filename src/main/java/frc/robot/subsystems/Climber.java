@@ -9,6 +9,7 @@ import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.HardwareConstants;
 
 public class Climber extends SubsystemBase {
+    // Create DoubleSolenoid objects
     private DoubleSolenoid leftClimber = new DoubleSolenoid(
         HardwareConstants.CLIMBER_PH_CAN,   // Pneumatic hub CAN id
         PneumaticsModuleType.REVPH,         // This is a REV Pneumatics hub
@@ -29,9 +30,15 @@ public class Climber extends SubsystemBase {
         PneumaticsModuleType.REVPH
     );
 
-    // Set climber
+    // Constructor
+    public Climber() {
+        // Disable on startup
+        setClimberState(false);
+    }
+
+    // Set climber state
     public void setClimberState(boolean up) {
-        System.out.println("CLIMBER COMMANDED TO");
+        System.out.println("CLIMBER COMMANDED TO"); // TODO debug
         if (!up) {
             leftClimber.set(Value.kForward);
             rightClimber.set(Value.kForward);

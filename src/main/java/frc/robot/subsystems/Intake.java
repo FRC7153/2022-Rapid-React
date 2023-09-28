@@ -13,7 +13,6 @@ public class Intake extends SubsystemBase {
     // Hardware
     private TalonSRX intakeWheel = new TalonSRX(HardwareConstants.INTAKE_WHEEL_CAN);
     
-    // Alex: these lines were kinda long, so I split them into multiple lines
     private DoubleSolenoid leftPiston = new DoubleSolenoid(
         HardwareConstants.INTAKE_PH_CAN, 
         PneumaticsModuleType.CTREPCM, 
@@ -26,6 +25,12 @@ public class Intake extends SubsystemBase {
         IntakeConstants.RIGHT_IN_CHANNEL, 
         IntakeConstants.RIGHT_OUT_CHANNEL
     );
+
+    // Constructor
+    public Intake() {
+        // Disable on startup
+        intakeUp();
+    }
 
     // Intake Down
     public void intakeDown() {

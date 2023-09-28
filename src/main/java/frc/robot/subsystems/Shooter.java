@@ -12,7 +12,7 @@ import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
-    // Remember to set the following two motors as brushless
+    // Motors
     private CANSparkMax shooter1 = new CANSparkMax(HardwareConstants.SHOOTER_1_CAN, MotorType.kBrushless);
     private CANSparkMax shooter2 = new CANSparkMax(HardwareConstants.SHOOTER_2_CAN, MotorType.kBrushless);
     private SparkMaxPIDController shootPID = shooter1.getPIDController();
@@ -21,6 +21,7 @@ public class Shooter extends SubsystemBase {
     
     // Constructor
     public Shooter() {
+        // Config PID
         shootPID.setP(ShooterConstants.SHOOT_P, 0);
         shootPID.setI(ShooterConstants.SHOOT_I, 0);
         shootPID.setD(ShooterConstants.SHOOT_D, 0);
@@ -29,7 +30,9 @@ public class Shooter extends SubsystemBase {
 
         shooter2.follow(shooter1, true);
 
+        // Disable on startup
         setShootSpeed(0.0);
+        indexerOff();
     }
 
     // Shooter

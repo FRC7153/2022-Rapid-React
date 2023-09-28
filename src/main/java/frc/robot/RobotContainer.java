@@ -35,10 +35,12 @@ public class RobotContainer {
   private JoystickButton climbBttn = new JoystickButton(driveControl, XboxController.Button.kY.value);
   private JoystickButton sprintBttn = new JoystickButton(driveControl, XboxController.Button.kLeftStick.value);
 
+  // Constructor
   public RobotContainer() {
     configureBindings();
   }
 
+  // Create joystick bindings
   private void configureBindings() {
     // TODO may cause teleop/auto problems
 
@@ -55,6 +57,7 @@ public class RobotContainer {
     intakeBttn.onTrue(new InstantCommand(intake::intakeUp, intake));
 
     // Climber Bindings
+    // TODO this shouldn't be toggleOnTrue?
     climbBttn.toggleOnTrue(new InstantCommand(() -> climber.setClimberState(true), climber));
     climbBttn.toggleOnFalse(new InstantCommand(() -> climber.setClimberState(false), climber));
 
@@ -70,6 +73,7 @@ public class RobotContainer {
     sprintBttn.onFalse(new InstantCommand(() -> drive.setMaxSpeed(DriveBaseConstants.SLOW_MAX_SPEED)));
   }
 
+  // Auto command
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
