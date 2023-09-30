@@ -12,12 +12,14 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveBaseConstants;
+import frc.robot.commands.AutoCenterCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.utility.Dashboard;
 
 public class RobotContainer {
   // Subsystems
@@ -32,8 +34,12 @@ public class RobotContainer {
   // Buttons
   private Trigger intakeBttn = new Trigger(() -> { return driveControl.getLeftTriggerAxis() >= 0.5; });
   private Trigger shootBttn = new Trigger(() -> { return driveControl.getRightTriggerAxis() >= 0.5; });
+  private JoystickButton aimBttn = new JoystickButton(driveControl, XboxController.Button.kLeftBumper.value);
   private JoystickButton climbBttn = new JoystickButton(driveControl, XboxController.Button.kY.value);
   private JoystickButton sprintBttn = new JoystickButton(driveControl, XboxController.Button.kLeftStick.value);
+
+  // Dashboard
+  public Dashboard dashboard = new Dashboard(drive, climber);
 
   // Constructor
   public RobotContainer() {
@@ -52,9 +58,12 @@ public class RobotContainer {
       driveControl::getRightX
     ));
 
+    // Aim bindings
+    aimBttn.whileTrue(new AutoCenterCommand(drive, shooter));
+
     // Intake Bindings
     intakeBttn.onFalse(new InstantCommand(intake::intakeUp, intake));
-    intakeBttn.onTrue(new InstantCommand(intake::intakeUp, intake));
+    intakeBttn.onTrue(new InstantCommand(intake::intakeDown, intake));
 
     // Climber Bindings
     // TODO this shouldn't be toggleOnTrue?
@@ -62,7 +71,7 @@ public class RobotContainer {
     climbBttn.toggleOnFalse(new InstantCommand(() -> climber.setClimberState(false), climber));
 
     // Shoot Bindings
-    shootBttn.onTrue(new ShootCommand(shooter));
+    shootBttn.onTrue(new ShootCommand(drive, shooter));
     shootBttn.onFalse(new ParallelCommandGroup(
       new InstantCommand(shooter::indexerOff),
       new InstantCommand(() -> shooter.setShootSpeed(0.0), shooter)

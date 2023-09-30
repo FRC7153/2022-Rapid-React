@@ -27,15 +27,14 @@ public class DriveBase extends SubsystemBase {
 
     // Constructor
     public DriveBase() {
-        gyro.calibrate();
-        gyro.reset();
-
         // These are inverted
+        wheel_fl.setInverted(false);
         wheel_fr.setInverted(true);
-        wheel_rl.setInverted(true);
+        wheel_rr.setInverted(true);
+        wheel_rl.setInverted(false);
 
         // Init drive base
-        mecDrive = new MecanumDrive(wheel_fl, wheel_fr, wheel_rl, wheel_rr);
+        mecDrive = new MecanumDrive(wheel_fl, wheel_rl, wheel_fr, wheel_rr);
     }
 
     // Drive method
@@ -47,11 +46,16 @@ public class DriveBase extends SubsystemBase {
         rot *= -maxSpeed;
         
         //mecDrive.driveCartesian(x, y, rot, Rotation2d.fromDegrees(gyro.getPitch()));
-        mecDrive.driveCartesian(x, y, rot);
+        mecDrive.driveCartesian(y, x, rot);
     }
 
     // Set max speed
     public void setMaxSpeed(double maxSpeed) {
         this.maxSpeed = maxSpeed;
+    }
+
+    // Get yaw
+    public double getYaw() {
+        return gyro.getRoll() * 360.0;
     }
 }

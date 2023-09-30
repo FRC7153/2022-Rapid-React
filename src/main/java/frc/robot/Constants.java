@@ -2,17 +2,17 @@ package frc.robot;
 
 public class Constants {
     public static final class DriveBaseConstants {
-        public static final double SLOW_MAX_SPEED = 0.4;
-        public static final double FAST_MAX_SPEED = 0.9;
+        public static final double SLOW_MAX_SPEED = 0.5;
+        public static final double FAST_MAX_SPEED = 0.65;
     }
 
     public static final class IntakeConstants {
         public static final double INTAKE_WHEEL_SPEED = 0.5;
 
-        public static final int LEFT_OUT_CHANNEL = 4;
-        public static final int RIGHT_OUT_CHANNEL = 6;
-        public static final int LEFT_IN_CHANNEL = 5;
-        public static final int RIGHT_IN_CHANNEL = 7;
+        public static final int LEFT_OUT_CHANNEL = 7;
+        public static final int RIGHT_OUT_CHANNEL = 5;
+        public static final int LEFT_IN_CHANNEL = 6;
+        public static final int RIGHT_IN_CHANNEL = 4;
     }
 
     public static final class ShooterConstants {
@@ -27,15 +27,22 @@ public class Constants {
 
     public static final class TrajectoryConstants {
         public static final double TARGET_REGRESSION(double y) {
-            return 8919.0 + (1010.0 * y) + (39.04 * (y*y));
+            // 1306.395 X^2 -3324.187 X +3635.208
+            y /= 2.65; // Adjustment because tape size increased
+            return 3635.208 + (-3324.187 * y) + (1306.395 * (y*y));
         }
     }
 
     public static final class ClimberConstants {
         public static final int LEFT_UP_CHANNEL = 3;
         public static final int LEFT_DOWN_CHANNEL = 2;
-        public static final int RIGHT_UP_CHANNEL = 0;
-        public static final int RIGHT_DOWN_CHANNEL = 0;
+        public static final int RIGHT_UP_CHANNEL = 0; // ?
+        public static final int RIGHT_DOWN_CHANNEL = 5;
+    }
+
+    public static final class LimelightConstants {
+        public static final double CACHE_TIMEOUT = 1.5; // seconds
+        public static final String NT_NAME = "limelight";
     }
 
     public static final class HardwareConstants {

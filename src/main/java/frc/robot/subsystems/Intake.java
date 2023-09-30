@@ -20,7 +20,7 @@ public class Intake extends SubsystemBase {
         IntakeConstants.LEFT_OUT_CHANNEL
     );
     private DoubleSolenoid rightPiston = new DoubleSolenoid(
-        HardwareConstants.INTAKE_WHEEL_CAN, 
+        HardwareConstants.INTAKE_PH_CAN, 
         PneumaticsModuleType.CTREPCM, 
         IntakeConstants.RIGHT_IN_CHANNEL, 
         IntakeConstants.RIGHT_OUT_CHANNEL

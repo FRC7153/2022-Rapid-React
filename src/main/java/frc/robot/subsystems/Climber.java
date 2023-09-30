@@ -32,13 +32,15 @@ public class Climber extends SubsystemBase {
 
     // Constructor
     public Climber() {
+        // Stop compressor from turning on
+        compressor.enableAnalog(20.0, 50.0);
+
         // Disable on startup
         setClimberState(false);
     }
 
     // Set climber state
     public void setClimberState(boolean up) {
-        System.out.println("CLIMBER COMMANDED TO"); // TODO debug
         if (!up) {
             leftClimber.set(Value.kForward);
             rightClimber.set(Value.kForward);
