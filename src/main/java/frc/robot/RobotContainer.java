@@ -39,7 +39,7 @@ public class RobotContainer {
   private JoystickButton sprintBttn = new JoystickButton(driveControl, XboxController.Button.kLeftStick.value);
 
   // Dashboard
-  public Dashboard dashboard = new Dashboard(drive, climber);
+  public Dashboard dashboard = new Dashboard(drive, shooter, climber);
 
   // Constructor
   public RobotContainer() {
@@ -71,7 +71,7 @@ public class RobotContainer {
     climbBttn.toggleOnFalse(new InstantCommand(() -> climber.setClimberState(false), climber));
 
     // Shoot Bindings
-    shootBttn.onTrue(new ShootCommand(drive, shooter));
+    shootBttn.onTrue(new ShootCommand(drive, shooter, dashboard));
     shootBttn.onFalse(new ParallelCommandGroup(
       new InstantCommand(shooter::indexerOff),
       new InstantCommand(() -> shooter.setShootSpeed(0.0), shooter)

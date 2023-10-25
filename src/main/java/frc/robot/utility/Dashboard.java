@@ -8,19 +8,24 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveBase;
+import frc.robot.subsystems.Shooter;
 
 public class Dashboard {
     // Drive Tab
     private GenericEntry compPressure;
     private GenericEntry gyro;
+    private GenericEntry shootSpeed;
+    private GenericEntry shootManual;
 
     // Subsystems
     private DriveBase drive;
+    private Shooter shooter;
     private Climber climber;
 
-    public Dashboard(DriveBase drive, Climber climber) {
+    public Dashboard(DriveBase drive, Shooter shooter, Climber climber) {
         // Unpack subsystems
         this.drive = drive;
+        this.shooter = shooter;
         this.climber = climber;
 
         // Drive tab
@@ -42,11 +47,27 @@ public class Dashboard {
         compPressure = driveTab.add("Pressure (PSI)", 0.0)
             .withPosition(0, 0)
             .getEntry();
+
+        // Speed
+        shootSpeed = driveTab.add("Shoot Setpoint %", -1.0)
+            .withPosition(0, 2)
+            .getEntry();
+
+        // Manual Shoot Speed
+        shootManual = driveTab.add("Manual Shoot Speed", 0.0)
+            .withPosition(7, 0)
+            .getEntry();
     }
 
     // Periodic
     public void periodic() {
         gyro.setDouble(drive.getYaw());
         compPressure.setDouble(climber.getPressure());
+        shootSpeed.setDouble(shooter.getSetpointPercentage() * 100.0);
+    }
+
+    // Get value
+    public double getManualSpeed() {
+        return shootManual.getDouble(0.0);
     }
 }

@@ -27,9 +27,8 @@ public class Constants {
 
     public static final class TrajectoryConstants {
         public static final double TARGET_REGRESSION(double y) {
-            // 1306.395 X^2 -3324.187 X +3635.208
-            y /= 2.65; // Adjustment because tape size increased
-            return 3635.208 + (-3324.187 * y) + (1306.395 * (y*y));
+           //262.599 X^2 -1868.145 X +3932.555
+           return (262.599 * (y*y)) - (1868.145 * y) + 3932.555;
         }
     }
 

@@ -9,15 +9,17 @@ import frc.robot.RobotContainer;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Shooter;
+import frc.robot.utility.Dashboard;
 
 public class ShootCommand extends ParallelCommandGroup {
-    public ShootCommand(DriveBase drive, Shooter shooter) {
+    public ShootCommand(DriveBase drive, Shooter shooter, Dashboard db) {
         addCommands(
             new AutoCenterCommand(drive, shooter),
             new SequentialCommandGroup(
                 new WaitUntilCommand(shooter::isLookingAtTarget),
                 // TODO set in real time:
                 new InstantCommand(() -> shooter.setShootSpeed(shooter.getLLShootSpeed()), shooter),
+                //new InstantCommand(() -> shooter.setShootSpeed(db.getManualSpeed()), shooter),
                 new WaitCommand(ShooterConstants.INDEXER_TIMEOUT),
                 new InstantCommand(shooter::indexerOn, shooter)
             )

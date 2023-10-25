@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -18,11 +19,15 @@ public class Shooter extends SubsystemBase {
     private CANSparkMax shooter1 = new CANSparkMax(HardwareConstants.SHOOTER_1_CAN, MotorType.kBrushless);
     private CANSparkMax shooter2 = new CANSparkMax(HardwareConstants.SHOOTER_2_CAN, MotorType.kBrushless);
     private SparkMaxPIDController shootPID = shooter1.getPIDController();
+    private RelativeEncoder shooterEnc = shooter1.getEncoder();
 
     public TalonFX indexerCan = new TalonFX(HardwareConstants.INDEXER_CAN);
 
     // Limelight
     private Limelight limelight = new Limelight();
+
+    // Speed
+    private double currentSpeed = 0.0;
     
     // Constructor
     public Shooter() {
@@ -52,8 +57,10 @@ public class Shooter extends SubsystemBase {
         if (Math.abs(speed) < 0.05) {
             shooter1.stopMotor();
             shooter2.stopMotor();
+            currentSpeed = 0.0;
         } else {
             shootPID.setReference(speed, ControlType.kVelocity, 0);
+            currentSpeed = speed;
         }
         
     }
@@ -78,5 +85,11 @@ public class Shooter extends SubsystemBase {
 
     public boolean isLookingAtTarget() {
         return Math.abs(getLLXpos()) < 2.0;
+    }
+
+    // Telemetry
+    public double getSetpointPercentage() {
+        if (currentSpeed == 0.0) { return 1.0; }
+        return shooterEnc.getVelocity() / currentSpeed;
     }
 }
