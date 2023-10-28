@@ -41,4 +41,9 @@ public class Limelight {
     public double getTA() {
         return isStale() ? 0.0 : cache[1];
     }
+
+    // Is centered
+    public boolean isCentered() {
+        return Math.abs(getTX()) < 2.0;
+    }
 }

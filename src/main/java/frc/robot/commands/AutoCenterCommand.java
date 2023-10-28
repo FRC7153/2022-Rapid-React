@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Shooter;
@@ -29,7 +28,7 @@ public class AutoCenterCommand extends CommandBase {
     public void execute() {
         drive.drive(
             0.0, 0.0,
-            0.025 * shooter.getLLXpos()
+            0.025 * shooter.limelight.getTX()
         );
     }
 

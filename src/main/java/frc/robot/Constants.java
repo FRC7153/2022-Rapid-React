@@ -2,8 +2,8 @@ package frc.robot;
 
 public class Constants {
     public static final class DriveBaseConstants {
-        public static final double SLOW_MAX_SPEED = 0.5;
-        public static final double FAST_MAX_SPEED = 0.65;
+        public static final double SLOW_MAX_SPEED = 0.3;
+        public static final double FAST_MAX_SPEED = 0.5;
     }
 
     public static final class IntakeConstants {
@@ -27,8 +27,8 @@ public class Constants {
 
     public static final class TrajectoryConstants {
         public static final double TARGET_REGRESSION(double y) {
-           //262.599 X^2 -1868.145 X +3932.555
-           return (262.599 * (y*y)) - (1868.145 * y) + 3932.555;
+           //y = 261.8423x2 - 1715.7136x + 3942.7859
+           return 261.8423 * y * y - 1715.7136 * y + 3942.7859;
         }
     }
 

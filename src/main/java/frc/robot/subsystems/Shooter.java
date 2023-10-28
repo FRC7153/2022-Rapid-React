@@ -11,7 +11,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.utility.Limelight;
 
 public class Shooter extends SubsystemBase {
@@ -24,7 +23,7 @@ public class Shooter extends SubsystemBase {
     public TalonFX indexerCan = new TalonFX(HardwareConstants.INDEXER_CAN);
 
     // Limelight
-    private Limelight limelight = new Limelight();
+    public Limelight limelight = new Limelight();
 
     // Speed
     private double currentSpeed = 0.0;
@@ -72,19 +71,6 @@ public class Shooter extends SubsystemBase {
 
     public void indexerOn(){
         indexerCan.set(TalonFXControlMode.PercentOutput, ShooterConstants.INDEXER_SPEED);
-    }
-    
-    // Get shoot speed from limelight
-    public double getLLShootSpeed() {
-        return TrajectoryConstants.TARGET_REGRESSION(limelight.getTA());
-    }
-
-    public double getLLXpos() {
-        return limelight.getTX();
-    }
-
-    public boolean isLookingAtTarget() {
-        return Math.abs(getLLXpos()) < 2.0;
     }
 
     // Telemetry

@@ -7,13 +7,15 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveBaseConstants;
 import frc.robot.commands.AutoCenterCommand;
-import frc.robot.commands.ShootCommand;
+import frc.robot.commands.LLShootCommand;
+import frc.robot.commands.LowShootCommand;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveBase;
@@ -65,13 +67,18 @@ public class RobotContainer {
     intakeBttn.onFalse(new InstantCommand(intake::intakeUp, intake));
     intakeBttn.onTrue(new InstantCommand(intake::intakeDown, intake));
 
-    // Climber Bindings
-    // TODO this shouldn't be toggleOnTrue?
-    climbBttn.toggleOnTrue(new InstantCommand(() -> climber.setClimberState(true), climber));
-    climbBttn.toggleOnFalse(new InstantCommand(() -> climber.setClimberState(false), climber));
+    // Climber Bindings (removed)
+    //climbBttn.toggleOnTrue(new InstantCommand(() -> climber.setClimberState(true), climber));
+    //climbBttn.toggleOnFalse(new InstantCommand(() -> climber.setClimberState(false), climber));
 
     // Shoot Bindings
-    shootBttn.onTrue(new ShootCommand(drive, shooter, dashboard));
+    shootBttn.whileTrue(
+      new ConditionalCommand(
+        new LowShootCommand(shooter),
+        new LLShootCommand(drive, shooter, dashboard), 
+        shooter.limelight::isStale
+      )
+    );
     shootBttn.onFalse(new ParallelCommandGroup(
       new InstantCommand(shooter::indexerOff),
       new InstantCommand(() -> shooter.setShootSpeed(0.0), shooter)
