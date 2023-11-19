@@ -6,14 +6,14 @@
 FRC 7153, Aetos Dios <br>
 Rapid React, 2022 Season
 
-> This is a rewrite. The code used in official competition can be found in the `master` branch, and is primarily undocumented. As of right now, there are no autonomous programs for this rewrite.
+> This is a rewrite. The code used in official competition can be found in the `master` branch and is primarily undocumented. As of right now, there are no autonomous programs for this rewrite.
 
 ## Overview
 - Mecanum drive
 - Pneumatic over-bumper intake
-- Flywheel shooter and index, 2 ball capacity
-- Pneumatic climbing mechanism (mid rung)
-- Limelight for targetting (auto-center, speed adjustment)
+- Flywheel shooter and indexer, 2-ball capacity
+- Pneumatic climbing mechanism (mid-rung)
+- Limelight for targeting (auto-center, speed adjustment)
 
 ## Controls
 * **Xbox Controller 0:**
@@ -21,7 +21,7 @@ Rapid React, 2022 Season
     * **Left Joystick Press:** Sprint (high-speed)
     * **Right Joystick:** Drive base rotation
     * **Left Bumper:** Limelight target auto-center
-    * **Y Button:**: Climbers extend
+    * **Y Button:** Climbers extend
 
 ## Competitions
 - Western NE
