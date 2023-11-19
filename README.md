@@ -6,7 +6,7 @@
 FRC 7153, Aetos Dios <br>
 Rapid React, 2022 Season
 
-> This is a rewrite. The code used in official competition can be found in the `code` branch, and is primarily undocumented. As of right now, there are no autonomous programs for this rewrite.
+> This is a rewrite. The code used in official competition can be found in the `master` branch, and is primarily undocumented. As of right now, there are no autonomous programs for this rewrite.
 
 ## Overview
 - Mecanum drive
