@@ -17,7 +17,6 @@ import frc.robot.commands.AutoCenterCommand;
 import frc.robot.commands.LLShootCommand;
 import frc.robot.commands.LowShootCommand;
 import frc.robot.commands.TeleopDriveCommand;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -28,7 +27,7 @@ public class RobotContainer {
   private DriveBase drive = new DriveBase();
   private Intake intake = new Intake();
   private Shooter shooter = new Shooter();
-  private Climber climber = new Climber();
+  //private Climber climber = new Climber();
 
   // Controllers
   private XboxController driveControl = new XboxController(0);
@@ -37,11 +36,11 @@ public class RobotContainer {
   private Trigger intakeBttn = new Trigger(() -> { return driveControl.getLeftTriggerAxis() >= 0.5; });
   private Trigger shootBttn = new Trigger(() -> { return driveControl.getRightTriggerAxis() >= 0.5; });
   private JoystickButton aimBttn = new JoystickButton(driveControl, XboxController.Button.kLeftBumper.value);
-  private JoystickButton climbBttn = new JoystickButton(driveControl, XboxController.Button.kY.value);
+  //private JoystickButton climbBttn = new JoystickButton(driveControl, XboxController.Button.kY.value);
   private JoystickButton sprintBttn = new JoystickButton(driveControl, XboxController.Button.kLeftStick.value);
 
   // Dashboard
-  public Dashboard dashboard = new Dashboard(drive, shooter, climber);
+  public Dashboard dashboard = new Dashboard(drive, shooter, intake);
 
   // Constructor
   public RobotContainer() {

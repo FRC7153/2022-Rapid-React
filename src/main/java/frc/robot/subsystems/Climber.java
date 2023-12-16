@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.HardwareConstants;
 
+/**
+ * This subsystem has been physically removed from the robot in the offseason,
+ * and this code is no longer used.
+ */
 public class Climber extends SubsystemBase {
     // Create DoubleSolenoid objects
     private DoubleSolenoid leftClimber = new DoubleSolenoid(

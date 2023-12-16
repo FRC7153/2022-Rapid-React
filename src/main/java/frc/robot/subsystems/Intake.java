@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,15 +16,22 @@ public class Intake extends SubsystemBase {
     
     private DoubleSolenoid leftPiston = new DoubleSolenoid(
         HardwareConstants.INTAKE_PH_CAN, 
-        PneumaticsModuleType.CTREPCM, 
+        PneumaticsModuleType.REVPH,
         IntakeConstants.LEFT_IN_CHANNEL,
         IntakeConstants.LEFT_OUT_CHANNEL
     );
+
     private DoubleSolenoid rightPiston = new DoubleSolenoid(
         HardwareConstants.INTAKE_PH_CAN, 
-        PneumaticsModuleType.CTREPCM, 
+        PneumaticsModuleType.REVPH, 
         IntakeConstants.RIGHT_IN_CHANNEL, 
         IntakeConstants.RIGHT_OUT_CHANNEL
+    );
+
+    // The compressor
+    private Compressor compressor = new Compressor(
+        HardwareConstants.CLIMBER_PH_CAN, 
+        PneumaticsModuleType.REVPH
     );
 
     // Constructor
@@ -46,5 +54,9 @@ public class Intake extends SubsystemBase {
 
         leftPiston.set(DoubleSolenoid.Value.kReverse);
         rightPiston.set(DoubleSolenoid.Value.kReverse);
+    }
+
+    public double getPressure() {
+        return compressor.getPressure();
     }
 }

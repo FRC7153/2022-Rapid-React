@@ -6,8 +6,8 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveBase;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 public class Dashboard {
@@ -20,13 +20,15 @@ public class Dashboard {
     // Subsystems
     private DriveBase drive;
     private Shooter shooter;
-    private Climber climber;
+    private Intake intake;
+    //private Climber climber;
 
-    public Dashboard(DriveBase drive, Shooter shooter, Climber climber) {
+    public Dashboard(DriveBase drive, Shooter shooter, Intake intake) {
         // Unpack subsystems
         this.drive = drive;
         this.shooter = shooter;
-        this.climber = climber;
+        this.intake = intake;
+        //this.climber = climber;
 
         // Drive tab
         ShuffleboardTab driveTab = Shuffleboard.getTab("Drive");
@@ -62,7 +64,7 @@ public class Dashboard {
     // Periodic
     public void periodic() {
         gyro.setDouble(drive.getYaw());
-        compPressure.setDouble(climber.getPressure());
+        compPressure.setDouble(intake.getPressure());
         shootSpeed.setDouble(shooter.getSetpointPercentage() * 100.0);
     }
 
