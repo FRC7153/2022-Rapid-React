@@ -13,8 +13,8 @@ for this rewrite.
 ## Overview
 - Mecanum drive
 - Pneumatic over-bumper intake
-- Flywheel shooter and index, 2 ball capacity
-- Pneumatic climbing mechanism (mid rung)
+- Flywheel shooter and indexer, 2-ball capacity
+- Pneumatic climbing mechanism (mid-rung)
 - Limelight for targeting (auto-center, speed adjustment)
 
 ## Controls
