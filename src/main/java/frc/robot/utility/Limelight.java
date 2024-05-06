@@ -1,49 +1,42 @@
 package frc.robot.utility;
 
-import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Constants.LimelightConstants;
+import frc.robot.utility.LimelightHelpers.PoseEstimate;
 
 public class Limelight {
-    // Network objects
-    private NetworkTable limelight = NetworkTableInstance.getDefault().getTable(LimelightConstants.NT_NAME);
-    private DoubleSubscriber llTx = limelight.getDoubleTopic("tx").subscribe(0.0);
-    private DoubleSubscriber llTa = limelight.getDoubleTopic("ta").subscribe(0.0);
-    private DoubleSubscriber llTv = limelight.getDoubleTopic("tv").subscribe(0.0);
-
     // Cache
-    private double[] cache = {0.0, 0.0};
-    private double cacheTimestamp = 0.0;
+    private boolean seesTags = false;
 
-    // Refresh (call periodically)
-    public void refresh() {
-        if (llTv.get() == 1.0) {
-            // Refresh the cache
-            cache[0] = llTx.get();
-            cache[1] = llTa.get();
-
-            cacheTimestamp = Timer.getFPGATimestamp();
-        }
+    /**
+     * Sends the Yaw to the limelight for MT2 integration. Call this periodically.
+     * @param yaw Yaw, degrees, CCW+
+     */
+    public void refresh(double yaw, double yawRate, double pitch, double pitchRate, double roll, double rollRate) {
+        LimelightHelpers.SetRobotOrientation(
+            LimelightConstants.NT_NAME, yaw, yawRate, pitch, pitchRate, roll, rollRate);
     }
 
-    // Get stale
-    public boolean isStale() {
-        return (Timer.getFPGATimestamp() - cacheTimestamp > LimelightConstants.CACHE_TIMEOUT);
+    /**
+     * @return Estimated robot pose2d, relative to blue alliance.
+     */
+    public Pose2d getPose() {
+        PoseEstimate est = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimelightConstants.NT_NAME);
+        seesTags = (est.tagCount != 0);
+        return est.pose;
     }
 
-    // Get values (check if stale)
-    public double getTX() {
-        return isStale() ? 15.0 : cache[0]; // defaults to 15.0
+    /**
+     * @return Distance from robot's estimated position to center of field (trash can).
+     */
+    public double getDistanceToCenter() {
+        return getPose().getTranslation().getNorm();
     }
 
-    public double getTA() {
-        return isStale() ? 0.0 : cache[1];
-    }
-
-    // Is centered
-    public boolean isCentered() {
-        return Math.abs(getTX()) < 2.0;
+    /**
+     * @return If the camera saw tags on the last call to {@code getPose()}
+     */
+    public boolean seesTags() {
+        return seesTags;
     }
 }

@@ -13,6 +13,7 @@ import frc.robot.subsystems.Shooter;
 public class Dashboard {
     // Drive Tab
     private GenericEntry compPressure;
+    private GenericEntry targetDistance;
     private GenericEntry gyro;
     private GenericEntry shootSpeed;
     private GenericEntry shootManual;
@@ -34,15 +35,19 @@ public class Dashboard {
         ShuffleboardTab driveTab = Shuffleboard.getTab("Drive");
 
         // Camera
-        driveTab.addCamera("Limelight Stream", "Limelight Stream", "http://10.71.53.11:5800/")
+        driveTab.addCamera("Limelight Stream", "Limelight Stream", "http://limelight.local:5800/")
             .withWidget(BuiltInWidgets.kCameraStream)
             .withPosition(1, 0)
             .withSize(3, 3)
             .withProperties(Map.of("SHOW CONTROLS", false));
 
         // Gyro
-        gyro = driveTab.add("Gyro (Yaw)", 0.0)
+        gyro = driveTab.add("Gyro (Y, P, R)", "?, ?, ?")
             .withPosition(0, 1)
+            .getEntry();
+
+        // Target distance
+        targetDistance = driveTab.add("Target Distance (m)", -1.0)
             .getEntry();
 
         // Pressure
@@ -63,7 +68,8 @@ public class Dashboard {
 
     // Periodic
     public void periodic() {
-        gyro.setDouble(drive.getYaw());
+        gyro.setString(String.format("%f, %f, %f", drive.getYaw(), drive.getPitch(), drive.getRoll()));
+        targetDistance.setDouble(shooter.limelight.getDistanceToCenter());
         compPressure.setDouble(intake.getPressure());
         shootSpeed.setDouble(shooter.getSetpointPercentage() * 100.0);
     }

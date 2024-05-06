@@ -53,8 +53,33 @@ public class DriveBase extends SubsystemBase {
         this.maxSpeed = maxSpeed;
     }
 
-    // Get yaw
+    /** Yaw */
     public double getYaw() {
-        return gyro.getRoll() * 360.0;
+        return gyro.getRoll();
+    }
+
+    /** Pitch */
+    public double getPitch() {
+        return gyro.getYaw();
+    }
+
+    /** Roll */
+    public double getRoll() {
+        return gyro.getPitch();
+    }
+
+    /** Yaw Rate */
+    public double getYawRate() {
+        return gyro.getRawGyroX();
+    }
+
+    /** Pitch Rate */
+    public double getPitchRate() {
+        return gyro.getRawGyroZ();
+    }
+
+    /** Roll rate */
+    public double getRollRate() {
+        return gyro.getRawGyroY();
     }
 }

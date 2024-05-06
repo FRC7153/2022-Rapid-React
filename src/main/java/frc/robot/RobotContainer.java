@@ -7,15 +7,13 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveBaseConstants;
-import frc.robot.commands.AutoCenterCommand;
 import frc.robot.commands.LLShootCommand;
-import frc.robot.commands.LowShootCommand;
+import frc.robot.commands.ManualShootCommand;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Intake;
@@ -26,7 +24,7 @@ public class RobotContainer {
   // Subsystems
   private DriveBase drive = new DriveBase();
   private Intake intake = new Intake();
-  private Shooter shooter = new Shooter();
+  private Shooter shooter = new Shooter(drive);
   //private Climber climber = new Climber();
 
   // Controllers
@@ -53,8 +51,6 @@ public class RobotContainer {
 
   // Create joystick bindings
   private void configureBindings() {
-    // TODO may cause teleop/auto problems
-
     // Drive Bindings
     drive.setDefaultCommand(new TeleopDriveCommand(
       drive,
@@ -64,24 +60,22 @@ public class RobotContainer {
     ));
 
     // Aim bindings
-    aimBttn.whileTrue(new AutoCenterCommand(drive, shooter));
+    /*aimBttn.whileTrue(new AutoCenterCommand(drive, shooter));*/
 
     // Intake Bindings
     intakeBttn.whileFalse(new InstantCommand(intake::intakeUp, intake).repeatedly());
     intakeBttn.whileTrue(new InstantCommand(intake::intakeDown, intake).repeatedly());
 
     // Climber Bindings (removed)
-    //climbBttn.toggleOnTrue(new InstantCommand(() -> climber.setClimberState(true), climber));
-    //climbBttn.toggleOnFalse(new InstantCommand(() -> climber.setClimberState(false), climber));
+    /*climbBttn.toggleOnTrue(new InstantCommand(() -> climber.setClimberState(true), climber));
+    climbBttn.toggleOnFalse(new InstantCommand(() -> climber.setClimberState(false), climber));*/
 
     // Shoot Bindings
     shootBttn.whileTrue(
-      new ConditionalCommand(
-        new LowShootCommand(shooter),
-        new LLShootCommand(drive, shooter, dashboard), 
-        shooter.limelight::isStale
-      )
+        //new LLShootCommand(drive, shooter), // For regression shooting 
+        new ManualShootCommand(drive, shooter, dashboard) // For regression tuning
     );
+
     shootBttn.onFalse(new ParallelCommandGroup(
       new InstantCommand(shooter::indexerOff),
       new InstantCommand(() -> shooter.setShootSpeed(0.0), shooter)

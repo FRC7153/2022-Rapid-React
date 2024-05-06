@@ -24,12 +24,18 @@ public class Shooter extends SubsystemBase {
 
     // Limelight
     public Limelight limelight = new Limelight();
+    private DriveBase base;
 
     // Speed
     private double currentSpeed = 0.0;
     
-    // Constructor
-    public Shooter() {
+    /**
+     * Init
+     * @param drive (for gyro + limelight)
+     */
+    public Shooter(DriveBase drive) {
+        this.base = drive;
+
         // Config PID
         shootPID.setP(ShooterConstants.SHOOT_P, 0);
         shootPID.setI(ShooterConstants.SHOOT_I, 0);
@@ -48,7 +54,17 @@ public class Shooter extends SubsystemBase {
     // Periodic
     @Override
     public void periodic() {
-        limelight.refresh();
+        limelight.refresh(
+            // Yaw
+            base.getYaw(),
+            base.getYawRate(),
+            // Pitch
+            base.getPitch(),
+            base.getPitchRate(),
+            // Roll
+            base.getRoll(),
+            base.getRollRate()
+        );
     }
 
     // Shooter
