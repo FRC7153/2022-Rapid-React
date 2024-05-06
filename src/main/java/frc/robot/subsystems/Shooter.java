@@ -4,9 +4,9 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
@@ -17,7 +17,7 @@ public class Shooter extends SubsystemBase {
     // Motors
     private CANSparkMax shooter1 = new CANSparkMax(HardwareConstants.SHOOTER_1_CAN, MotorType.kBrushless);
     private CANSparkMax shooter2 = new CANSparkMax(HardwareConstants.SHOOTER_2_CAN, MotorType.kBrushless);
-    private SparkMaxPIDController shootPID = shooter1.getPIDController();
+    private SparkPIDController shootPID = shooter1.getPIDController();
     private RelativeEncoder shooterEnc = shooter1.getEncoder();
 
     public TalonFX indexerCan = new TalonFX(HardwareConstants.INDEXER_CAN);
