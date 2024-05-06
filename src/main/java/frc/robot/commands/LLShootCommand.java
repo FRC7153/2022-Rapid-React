@@ -16,7 +16,9 @@ public class LLShootCommand extends SequentialCommandGroup {
                 new InstantCommand(shooter::indexerOn)
             ),
             new InstantCommand(() -> shooter.setShootSpeed(
-                TrajectoryConstants.TARGET_REGRESSION(shooter.limelight.getDistanceToCenter())
+                //TrajectoryConstants.TARGET_REGRESSION(shooter.limelight.getDistanceToCenter())
+                // TODO new regression here
+                0.0
             )).repeatedly()
         );
 
