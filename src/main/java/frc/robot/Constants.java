@@ -9,10 +9,10 @@ public class Constants {
     public static final class IntakeConstants {
         public static final double INTAKE_WHEEL_SPEED = 0.5;
 
-        public static final int LEFT_OUT_CHANNEL = 1;
-        public static final int RIGHT_OUT_CHANNEL = 0;
-        public static final int LEFT_IN_CHANNEL = 3;
-        public static final int RIGHT_IN_CHANNEL = 2;
+        public static final int LEFT_OUT_CHANNEL = 2; // 3
+        public static final int RIGHT_OUT_CHANNEL = 0; // 0
+        public static final int LEFT_IN_CHANNEL = 3; // 2
+        public static final int RIGHT_IN_CHANNEL = 1; // 1
     }
 
     public static final class ShooterConstants {

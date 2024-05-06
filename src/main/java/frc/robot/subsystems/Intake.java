@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -36,8 +37,16 @@ public class Intake extends SubsystemBase {
 
     // Constructor
     public Intake() {
+        // Motor config
+        
+
         // Disable on startup
         intakeUp();
+    }
+
+    // Default command
+    public void initDefaultCommand() {
+        setDefaultCommand(new InstantCommand(this::intakeUp, this));
     }
 
     // Intake Down

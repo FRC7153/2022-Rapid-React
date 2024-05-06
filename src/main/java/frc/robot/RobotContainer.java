@@ -44,6 +44,10 @@ public class RobotContainer {
 
   // Constructor
   public RobotContainer() {
+    // Set default commands
+    intake.initDefaultCommand();
+
+    // Set controls
     configureBindings();
   }
 
@@ -63,8 +67,8 @@ public class RobotContainer {
     aimBttn.whileTrue(new AutoCenterCommand(drive, shooter));
 
     // Intake Bindings
-    intakeBttn.onFalse(new InstantCommand(intake::intakeUp, intake));
-    intakeBttn.onTrue(new InstantCommand(intake::intakeDown, intake));
+    intakeBttn.whileFalse(new InstantCommand(intake::intakeUp, intake).repeatedly());
+    intakeBttn.whileTrue(new InstantCommand(intake::intakeDown, intake).repeatedly());
 
     // Climber Bindings (removed)
     //climbBttn.toggleOnTrue(new InstantCommand(() -> climber.setClimberState(true), climber));
