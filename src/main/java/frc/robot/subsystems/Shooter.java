@@ -1,13 +1,16 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
+import com.ctre.phoenix.motorcontrol.can.BaseTalon;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -20,7 +23,7 @@ public class Shooter extends SubsystemBase {
     private SparkPIDController shootPID = shooter1.getPIDController();
     private RelativeEncoder shooterEnc = shooter1.getEncoder();
 
-    public TalonFX indexerCan = new TalonFX(HardwareConstants.INDEXER_CAN);
+    public Talon indexerCan = new Talon(HardwareConstants.INDEXER_CAN);
 
     // Limelight
     public Limelight limelight = new Limelight();
@@ -83,11 +86,11 @@ public class Shooter extends SubsystemBase {
 
     // Indexer
     public void indexerOff(){
-        indexerCan.set(TalonFXControlMode.PercentOutput, 0.0);
+        indexerCan.set(0.0);
     }
 
     public void indexerOn(){
-        indexerCan.set(TalonFXControlMode.PercentOutput, ShooterConstants.INDEXER_SPEED);
+        indexerCan.set( ShooterConstants.INDEXER_SPEED);
     }
 
     // Telemetry

@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
