@@ -54,16 +54,17 @@ public class Shooter extends SubsystemBase {
     // Periodic
     @Override
     public void periodic() {
+        // Our robot is stable, we can assume pitch and roll is always 0.0
         limelight.refresh(
             // Yaw
             base.getYaw(),
             base.getYawRate(),
             // Pitch
-            base.getPitch(),
-            base.getPitchRate(),
+            0.0,
+            0.0,
             // Roll
-            base.getRoll(),
-            base.getRollRate()
+            0.0,
+            0.0
         );
     }
 
