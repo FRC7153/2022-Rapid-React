@@ -17,7 +17,6 @@ public class Dashboard {
     private GenericEntry gyro;
     private GenericEntry shootSpeed;
     private GenericEntry shootManual;
-    private GenericEntry seesTags;
 
     // Subsystems
     private DriveBase drive;
@@ -51,10 +50,6 @@ public class Dashboard {
         targetDistance = driveTab.add("Target Distance (m)", -1.0)
             .getEntry();
 
-        // Sees Tags?
-        seesTags = driveTab.add("Sees tags?", false)
-            .getEntry();
-
         // Pressure
         compPressure = driveTab.add("Pressure (PSI)", 0.0)
             .withPosition(0, 0)
@@ -75,7 +70,6 @@ public class Dashboard {
     public void periodic() {
         gyro.setString(String.format("%f, %f, %f", drive.getYaw(), drive.getPitch(), drive.getRoll()));
         targetDistance.setDouble(shooter.limelight.getDistanceToCenter());
-        seesTags.setBoolean(shooter.limelight.seesTags());
         compPressure.setDouble(intake.getPressure());
         shootSpeed.setDouble(shooter.getSetpointPercentage() * 100.0);
     }

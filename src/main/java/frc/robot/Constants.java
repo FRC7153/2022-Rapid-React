@@ -26,8 +26,7 @@ public class Constants {
     }
 
     public static final class TrajectoryConstants {
-        /** Target regression using retro-reflective tape */
-        public static final double TARGET_REGRESSION_V1(double y) {
+        public static final double TARGET_REGRESSION(double y) {
            //y = 261.8423x2 - 1715.7136x + 3942.7859
            return 261.8423 * y * y - 1715.7136 * y + 3942.7859;
         }
