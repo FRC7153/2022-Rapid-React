@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+
 public class Constants {
     public static final class DriveBaseConstants {
         public static final double SLOW_MAX_SPEED = 0.3;
@@ -9,14 +11,14 @@ public class Constants {
     public static final class IntakeConstants {
         public static final double INTAKE_WHEEL_SPEED = 0.5;
 
-        public static final int LEFT_OUT_CHANNEL = 2; // 3
-        public static final int RIGHT_OUT_CHANNEL = 0; // 0
-        public static final int LEFT_IN_CHANNEL = 3; // 2
-        public static final int RIGHT_IN_CHANNEL = 1; // 1
+        public static final int LEFT_OUT_CHANNEL = 3;
+        public static final int RIGHT_OUT_CHANNEL = 1;
+        public static final int LEFT_IN_CHANNEL = 2;
+        public static final int RIGHT_IN_CHANNEL = 0;
     }
 
     public static final class ShooterConstants {
-        public static final double INDEXER_SPEED = 0.85;
+        public static final double INDEXER_SPEED = 0.5;
 
         public static final double SHOOT_P = 0.00008;
         public static final double SHOOT_I = 6e-7;
@@ -30,6 +32,10 @@ public class Constants {
            //y = 261.8423x2 - 1715.7136x + 3942.7859
            return 261.8423 * y * y - 1715.7136 * y + 3942.7859;
         }
+
+        public static final double TARGET_REGRESSION_V2(double d) {
+            return -277.698 * d * d + 2500.87 * d - 2158.17;
+        }
     }
 
     public static final class ClimberConstants {
@@ -41,7 +47,9 @@ public class Constants {
 
     public static final class LimelightConstants {
         public static final double CACHE_TIMEOUT = 1.5; // seconds
-        public static final String NT_NAME = "limelight";
+        public static final String NT_NAME = "limelight-aetos";
+
+        public static final Translation2d kTRASH_CAN = new Translation2d(16.48/2.0, 8.10/2.0);
     }
 
     public static final class HardwareConstants {

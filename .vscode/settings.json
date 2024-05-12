@@ -25,13 +25,5 @@
       }
     },
   ],
-<<<<<<< HEAD
   "java.test.defaultConfig": "WPIlibUnitTests"
-=======
-  "java.test.defaultConfig": "WPIlibUnitTests",
-  "cSpell.words": [
-    "ctre",
-    "motorcontrol"
-  ]
->>>>>>> 5f3592d8bba8d90e05278e4f71ab2cc2e31acb2c
 }

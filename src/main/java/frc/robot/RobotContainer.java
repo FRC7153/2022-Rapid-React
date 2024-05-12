@@ -24,7 +24,7 @@ public class RobotContainer {
   // Subsystems
   private DriveBase drive = new DriveBase();
   private Intake intake = new Intake();
-  private Shooter shooter = new Shooter(drive);
+  private Shooter shooter = new Shooter();
   //private Climber climber = new Climber();
 
   // Controllers

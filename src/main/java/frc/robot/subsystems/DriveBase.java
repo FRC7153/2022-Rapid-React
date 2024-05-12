@@ -38,7 +38,6 @@ public class DriveBase extends SubsystemBase {
 
     // Drive method
     public void drive(double y, double x, double rot) {
-        // TODO debug
         // Note the axes that are inverted below
         x *= -maxSpeed;
         y *= maxSpeed;
@@ -66,20 +65,5 @@ public class DriveBase extends SubsystemBase {
     /** Roll */
     public double getRoll() {
         return gyro.getPitch();
-    }
-
-    /** Yaw Rate */
-    public double getYawRate() {
-        return gyro.getRawGyroX();
-    }
-
-    /** Pitch Rate */
-    public double getPitchRate() {
-        return gyro.getRawGyroZ();
-    }
-
-    /** Roll rate */
-    public double getRollRate() {
-        return gyro.getRawGyroY();
     }
 }

@@ -1,16 +1,12 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
-import com.ctre.phoenix.motorcontrol.can.BaseTalon;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -23,22 +19,18 @@ public class Shooter extends SubsystemBase {
     private SparkPIDController shootPID = shooter1.getPIDController();
     private RelativeEncoder shooterEnc = shooter1.getEncoder();
 
-    public Talon indexerCan = new Talon(HardwareConstants.INDEXER_CAN);
+    public TalonFX indexerCan = new TalonFX(HardwareConstants.INDEXER_CAN);
 
     // Limelight
     public Limelight limelight = new Limelight();
-    private DriveBase base;
 
     // Speed
     private double currentSpeed = 0.0;
     
     /**
      * Init
-     * @param drive (for gyro + limelight)
      */
-    public Shooter(DriveBase drive) {
-        this.base = drive;
-
+    public Shooter() {
         // Config PID
         shootPID.setP(ShooterConstants.SHOOT_P, 0);
         shootPID.setI(ShooterConstants.SHOOT_I, 0);
@@ -57,17 +49,11 @@ public class Shooter extends SubsystemBase {
     // Periodic
     @Override
     public void periodic() {
-        limelight.refresh(
-            // Yaw
-            base.getYaw(),
-            base.getYawRate(),
-            // Pitch
-            base.getPitch(),
-            base.getPitchRate(),
-            // Roll
-            base.getRoll(),
-            base.getRollRate()
-        );
+        /*
+         * If use use MegaTag2 on our Limelight, we'll need to call this with to supply
+         * the robot's heading.
+         */
+        //limelight.refresh();
     }
 
     // Shooter
