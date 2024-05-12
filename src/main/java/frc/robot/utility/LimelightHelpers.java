@@ -2,7 +2,7 @@
 /**
  * From https://github.com/LimelightVision/limelightlib-wpijava
  * v1.6
- * Unused methods commented out.
+ * Unused private methods commented out.
  */
 
 package frc.robot.utility;

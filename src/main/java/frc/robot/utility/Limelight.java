@@ -1,42 +1,92 @@
 package frc.robot.utility;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.utility.LimelightHelpers.PoseEstimate;
 
 public class Limelight {
     // Cache
-    private boolean seesTags = false;
+    private boolean seesTags = false; // If tags have been seen
+    private double lastHeartBeat = -1.0; // Last heartbeat received
+    private double lastHeartBeatTimeStamp = -1.0; // Timestamp of last heartbeat
+
+    // Network Tables
+    private String name;
+    private DoubleSubscriber heartbeatSub;
 
     /**
-     * Sends the Yaw to the limelight for MT2 integration. Call this periodically.
-     * @param yaw Yaw, degrees, CCW+
+     * Instantiates a new LimeLight.
+     * @param name The name of the limelight.
      */
-    public void refresh(double yaw, double yawRate, double pitch, double pitchRate, double roll, double rollRate) {
-        LimelightHelpers.SetRobotOrientation(
-            LimelightConstants.NT_NAME, yaw, yawRate, pitch, pitchRate, roll, rollRate);
+    public Limelight(String name) {
+        this.name = LimelightHelpers.sanitizeName(name);
+
+        NetworkTable nt = NetworkTableInstance.getDefault().getTable(this.name);
+        heartbeatSub = nt.getDoubleTopic("hb").subscribe(-1.0);
     }
+
+    /**
+     * Sends the Yaw to the limelight for MT2 integration. Call this periodically, if using MT2.
+     */
+    /*public void refresh(double yaw, double yawRate, double pitch, double pitchRate, double roll, double rollRate) {
+        LimelightHelpers.SetRobotOrientation(
+            name, yaw, yawRate, pitch, pitchRate, roll, rollRate);
+    }*/
 
     /**
      * @return Estimated robot pose2d, relative to blue alliance.
      */
     public Pose2d getPose() {
-        PoseEstimate est = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimelightConstants.NT_NAME);
+        PoseEstimate est = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
         seesTags = (est.tagCount != 0);
         return est.pose;
     }
 
     /**
-     * @return Distance from robot's estimated position to center of field (trash can).
+     * @return Distance from robot's estimated position to the trash can
      */
-    public double getDistanceToCenter() {
-        return getPose().getTranslation().getNorm();
+    public double getDistanceToTrashCan() {
+        return getPose().getTranslation().getDistance(LimelightConstants.kTRASH_CAN);
     }
 
     /**
-     * @return If the camera saw tags on the last call to {@code getPose()}
+     * @return If the camera saw tags on the last call to {@code getPose()} or 
+     * {@code getDistanceToCenter()}
      */
     public boolean seesTags() {
         return seesTags;
+    }
+
+    /**
+     * Checks the limelight's heartbeat to see if it's still responding.
+     * @return Whether the limelight is still responding
+     */
+    public boolean isAlive() {
+        double newHeartBeat = heartbeatSub.get(lastHeartBeat);
+
+        if (newHeartBeat != lastHeartBeat) {
+            // Limelight has pinged!
+            lastHeartBeat = newHeartBeat;
+            lastHeartBeatTimeStamp = Timer.getFPGATimestamp();
+            return true;
+        } else if (lastHeartBeatTimeStamp != -1.0 && 
+                Timer.getFPGATimestamp() - lastHeartBeatTimeStamp <= LimelightConstants.kCACHE_TIMEOUT) {
+            // Limelight has pinged recently!
+            return true;
+        } else {
+            // Limelight has not pinged recently!
+            return false;
+        }
+    }
+
+    /**
+     * @return A URL for viewing this camera stream
+     */
+    public String getURL() {
+        return String.format("http://%s.local:5800/", name);
     }
 }

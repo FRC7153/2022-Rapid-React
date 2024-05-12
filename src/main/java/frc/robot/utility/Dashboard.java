@@ -1,81 +1,147 @@
 package frc.robot.utility;
 
-import java.util.Map;
-
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.GenericPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.Constants.BuildConstants;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
+import java.util.Map;
+
 public class Dashboard {
-    // Drive Tab
-    private GenericEntry compPressure;
-    private GenericEntry targetDistance;
-    private GenericEntry gyro;
-    private GenericEntry shootSpeed;
-    private GenericEntry shootManual;
+  // Subsystems
+  private DriveBase driveSys;
+  private Intake intakeSys;
+  private Shooter shooterSys;
+  private PDH pdh;
 
-    // Subsystems
-    private DriveBase drive;
-    private Shooter shooter;
-    private Intake intake;
-    //private Climber climber;
+  // Drive tab
+  private GenericPublisher analogPressureOut, gyroOut, digitalPressureOut, limelightAliveOut,
+    shooterErrOut, currentOut;
 
-    public Dashboard(DriveBase drive, Shooter shooter, Intake intake) {
-        // Unpack subsystems
-        this.drive = drive;
-        this.shooter = shooter;
-        this.intake = intake;
-        //this.climber = climber;
+  private GenericEntry fieldOrientedEntry, manualShootVeloEntry;
 
-        // Drive tab
-        ShuffleboardTab driveTab = Shuffleboard.getTab("Drive");
+  /**
+   * Configs the driver-facing Shuffleboard dashboard.
+   * @param drive The drive subsystem.
+   * @param intake The intake subsystem.
+   * @param shooter The shooter subsystem.
+   */
+  public Dashboard(DriveBase drive, Intake intake, Shooter shooter, PDH pdh) {
+    this.driveSys = drive;
+    this.intakeSys = intake;
+    this.shooterSys = shooter;
+    this.pdh = pdh;
 
-        // Camera
-        driveTab.addCamera("Limelight Stream", "Limelight Stream", "http://limelight.local:5800/")
-            .withWidget(BuiltInWidgets.kCameraStream)
-            .withPosition(1, 0)
-            .withSize(3, 3)
-            .withProperties(Map.of("SHOW CONTROLS", false));
+    // Init tabs
+    ShuffleboardTab driveTab = Shuffleboard.getTab("Drive");
 
-        // Gyro
-        gyro = driveTab.add("Gyro (Y, P, R)", "?, ?, ?")
-            .withPosition(0, 1)
-            .getEntry();
+    // Analog pressure output
+    analogPressureOut = driveTab.add("Pressure (PSI)", -1.0)
+      .withSize(2, 1)
+      .withPosition(0, 0)
+      .withWidget(BuiltInWidgets.kNumberBar)
+      .withProperties(Map.of("Min", 0, "Max", 125))
+      .getEntry();
+    
+    // Gyro output
+    gyroOut = driveTab.add("Gyro (Yaw, Pitch, Roll)", "?, ?, ?")
+      .withSize(2, 1)
+      .withPosition(0, 1)
+      .getEntry();
 
-        // Target distance
-        targetDistance = driveTab.add("Target Distance (m)", -1.0)
-            .getEntry();
+    // Digital pressure output
+    digitalPressureOut = driveTab.add("Pressure Full", false)
+      .withSize(1, 1)
+      .withPosition(0, 2)
+      .withWidget(BuiltInWidgets.kBooleanBox)
+      .getEntry();
 
-        // Pressure
-        compPressure = driveTab.add("Pressure (PSI)", 0.0)
-            .withPosition(0, 0)
-            .getEntry();
+    // Limelight alive output
+    limelightAliveOut = driveTab.add("Limelight Alive", false)
+      .withSize(1, 1)
+      .withPosition(1, 2)
+      .withWidget(BuiltInWidgets.kBooleanBox)
+      .getEntry();
 
-        // Speed
-        shootSpeed = driveTab.add("Shoot Setpoint %", -1.0)
-            .withPosition(0, 2)
-            .getEntry();
+    // Camera stream output
+    driveTab.addCamera("Limelight", "Limelight", shooterSys.limelight.getURL())
+      .withSize(3, 3)
+      .withPosition(2, 0)
+      .withWidget(BuiltInWidgets.kCameraStream)
+      .withProperties(Map.of("Show controls", false));
 
-        // Manual Shoot Speed
-        shootManual = driveTab.add("Manual Shoot Speed", 0.0)
-            .withPosition(7, 0)
-            .getEntry();
+    // Mecanum state output
+    driveTab.add("Mecanum Drivebase", driveSys.getMecanumSendable())
+      .withSize(4, 2)
+      .withPosition(5, 0)
+      .withWidget(BuiltInWidgets.kMecanumDrive);
+
+    // Shooter error percentage
+    shooterErrOut = driveTab.add("Shoot Setpoint %", -1.0)
+      .withSize(1, 1)
+      .withPosition(5, 2)
+      .withWidget(BuiltInWidgets.kNumberBar)
+      .withProperties(Map.of("Min", 0.0, "Max", 1.1))
+      .getEntry();
+
+    // Field oriented switch input
+    fieldOrientedEntry = driveTab.add("Field Oriented", false)
+      .withSize(1, 1)
+      .withPosition(6, 2)
+      .withWidget(BuiltInWidgets.kToggleSwitch)
+      .getEntry();
+
+    // Current output
+    currentOut = driveTab.add("Current (amps)", -1.0)
+      .withSize(1, 1)
+      .withPosition(7, 2)
+      .withWidget(BuiltInWidgets.kNumberBar)
+      .withProperties(Map.of("Min", 0.0, "Max", 240.0))
+      .getEntry();
+
+    // Init manual shoot velo
+    if (BuildConstants.kMANUAL_SHOOTING) {
+      manualShootVeloEntry = driveTab.add("Manual Shoot Velocity (RPM)", 0.0)
+        .getEntry(); 
+    }
+  }
+
+  /**
+   * Call this periodically to update all outputs.
+   */
+  public void periodic() {
+    analogPressureOut.setDouble(intakeSys.getPressure());
+    gyroOut.setString(driveSys.prettyPrintGyro());
+    digitalPressureOut.setBoolean(intakeSys.getPressureSwitch());
+    limelightAliveOut.setBoolean(shooterSys.limelight.isAlive());
+    shooterErrOut.setDouble(shooterSys.getShootVelocityErrorPercentage());
+    currentOut.setDouble(pdh.getTotalCurrent());
+  }
+
+  /**
+   * Gets the value of the field oriented switch, supplied by the user
+   * @return true if field oriented.
+   */
+  public boolean getFieldOrientedSwitch() {
+    return fieldOrientedEntry.getBoolean(false);
+  }
+
+  /**
+   * Gets the manual shoot velocity supplied by the user.
+   * @return RPM
+   */
+  public double getManualShootVelocity() {
+    if (!BuildConstants.kMANUAL_SHOOTING) {
+      DriverStation.reportError("getManualShootVelocity() called, but manual shooting mode is disabled in this build!", false);
+      return 0.0;
     }
 
-    // Periodic
-    public void periodic() {
-        gyro.setString(String.format("%f, %f, %f", drive.getYaw(), drive.getPitch(), drive.getRoll()));
-        targetDistance.setDouble(shooter.limelight.getDistanceToCenter());
-        compPressure.setDouble(intake.getPressure());
-        shootSpeed.setDouble(shooter.getSetpointPercentage() * 100.0);
-    }
-
-    // Get value
-    public double getManualSpeed() {
-        return shootManual.getDouble(0.0);
-    }
+    return manualShootVeloEntry.getDouble(0.0);
+  }
 }

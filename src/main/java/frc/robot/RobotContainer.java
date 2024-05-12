@@ -4,13 +4,12 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.DriveBaseConstants;
 import frc.robot.commands.LLShootCommand;
 import frc.robot.commands.ManualShootCommand;
@@ -19,6 +18,7 @@ import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utility.Dashboard;
+import frc.robot.utility.PDH;
 
 public class RobotContainer {
   // Subsystems
@@ -27,23 +27,19 @@ public class RobotContainer {
   private Shooter shooter = new Shooter();
   //private Climber climber = new Climber();
 
-  // Controllers
-  private XboxController driveControl = new XboxController(0);
+  // Misc hardware
+  private PDH pdh = new PDH();
 
-  // Buttons
-  private Trigger intakeBttn = new Trigger(() -> { return driveControl.getLeftTriggerAxis() >= 0.5; });
-  private Trigger shootBttn = new Trigger(() -> { return driveControl.getRightTriggerAxis() >= 0.5; });
-  private JoystickButton aimBttn = new JoystickButton(driveControl, XboxController.Button.kLeftBumper.value);
-  //private JoystickButton climbBttn = new JoystickButton(driveControl, XboxController.Button.kY.value);
-  private JoystickButton sprintBttn = new JoystickButton(driveControl, XboxController.Button.kLeftStick.value);
-
-  // Dashboard
-  public Dashboard dashboard = new Dashboard(drive, shooter, intake);
+  // Controllers and dashboard
+  private CommandXboxController driveControl = new CommandXboxController(0);
+  private Dashboard dashboard = new Dashboard(drive, intake, shooter, pdh);
 
   // Constructor
   public RobotContainer() {
     // Set default commands
+    drive.initDefaultCommand();
     intake.initDefaultCommand();
+    shooter.initDefaultCommand();
 
     // Set controls
     configureBindings();
@@ -54,41 +50,50 @@ public class RobotContainer {
     // Drive Bindings
     drive.setDefaultCommand(new TeleopDriveCommand(
       drive,
+      dashboard,
       driveControl::getLeftY,
       driveControl::getLeftX,
       driveControl::getRightX
     ));
 
     // Aim bindings
-    /*aimBttn.whileTrue(new AutoCenterCommand(drive, shooter));*/
+    /*driveControl.leftBumper().whileTrue(new AutoCenterCommand(drive, shooter));*/
 
     // Intake Bindings
-    intakeBttn.whileFalse(new InstantCommand(intake::intakeUp, intake).repeatedly());
-    intakeBttn.whileTrue(new InstantCommand(intake::intakeDown, intake).repeatedly());
+    driveControl.leftTrigger().whileFalse(new InstantCommand(() -> intake.setIntakeState(false), intake).repeatedly());
+    driveControl.leftTrigger().whileTrue(new InstantCommand(() -> intake.setIntakeState(true), intake).repeatedly());
 
     // Climber Bindings (removed)
-    /*climbBttn.toggleOnTrue(new InstantCommand(() -> climber.setClimberState(true), climber));
-    climbBttn.toggleOnFalse(new InstantCommand(() -> climber.setClimberState(false), climber));*/
+    /*driveControl.y().toggleOnTrue(new InstantCommand(() -> climber.setClimberState(true), climber));
+    driveControl.y().toggleOnFalse(new InstantCommand(() -> climber.setClimberState(false), climber));*/
 
     // Shoot Bindings
-    shootBttn.whileTrue(
-        //new LLShootCommand(drive, shooter), // For regression shooting 
-        new ManualShootCommand(drive, shooter, dashboard) // For regression tuning
+    driveControl.rightTrigger().whileTrue(
+        (BuildConstants.kMANUAL_SHOOTING) ? // Ternary conditional interpreted on initialization
+        new ManualShootCommand(drive, shooter, dashboard) : // For regression tuning
+        new LLShootCommand(shooter)// For regression shooting 
     );
 
-    shootBttn.onFalse(new ParallelCommandGroup(
-      new InstantCommand(shooter::indexerOff),
-      new InstantCommand(() -> shooter.setShootSpeed(0.0), shooter)
+    driveControl.rightTrigger().onFalse(new ParallelCommandGroup(
+      new InstantCommand(() -> shooter.setIndexerState(false)),
+      new InstantCommand(() -> shooter.setShootVelocity(0.0), shooter)
     ));
 
     // Sprint Bindings
-    sprintBttn.onTrue(new InstantCommand(() -> drive.setMaxSpeed(DriveBaseConstants.FAST_MAX_SPEED)));
-    sprintBttn.onFalse(new InstantCommand(() -> drive.setMaxSpeed(DriveBaseConstants.SLOW_MAX_SPEED)));
+    driveControl.leftStick().onTrue(new InstantCommand(() -> drive.setMaxSpeed(DriveBaseConstants.kFAST_MAX_SPEED)));
+    driveControl.leftStick().onFalse(new InstantCommand(() -> drive.setMaxSpeed(DriveBaseConstants.kSLOW_MAX_SPEED)));
   }
 
   // Auto command
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
+  }
+
+  /**
+   * Refreshes the dashboard's values. Call this periodically.
+   */
+  public void refreshDashboard() {
+    dashboard.periodic();
   }
 }
 

@@ -20,10 +20,14 @@ for this rewrite.
 ## Controls
 * **Xbox Controller 0:**
     * **Left Joystick:** Drive base strafe
-    * **Left Joystick Press:** Sprint (high-speed)
+    * **Left Joystick Press:** Sprint (high speed)
     * **Right Joystick:** Drive base rotation
     * **Left Bumper:** Limelight target auto-center
-    * **Y Button:**: Climbers extend (deprecated)
+    * **Left Trigger:** Intake deploy
+    * **Right Trigger:** Shoot (indexer runs after delay)
+    * **Y Button:** Climbers extend (deprecated)
+* **Shuffleboard:**
+    * **Drive/Field Oriented:** Switches between field-oriented and robot-oriented driving
 
 ## Competitions
 - Western NE
@@ -50,11 +54,14 @@ for this rewrite.
 11. *(unassigned)*
 12. ~~Intake Pneumatics Hub (CTRE Pneumatics Control Module)~~
 
-### ~~Intake Pneumatics Hub (CAN 12)~~
-4. ~~Right Extend Channel~~
-5. ~~Right Retract Channel~~
-6. ~~Left Retract Channel~~
-7. ~~Left Extend Channel~~
+### Intake Pneumatics Hub (CAN ID 2)
+0. Right stow channel
+1. Right deploy channel
+2. Left stow channel
+3. Left deploy channel
+
+### Network
+- **limelight-aetos.local**: Primary limelight
 
 > Originally, the CTRE PCM (CAN 12) was used for the intake solenoids, which operated
 at 12V, and the REV PH (CAN 2) was used for the climbing solenoids, which operated 

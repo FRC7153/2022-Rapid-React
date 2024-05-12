@@ -1,0 +1,11 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Drive/Mecanum Drivebase": "MecanumDrive"
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  }
+}

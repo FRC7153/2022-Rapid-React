@@ -1,49 +1,48 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.HardwareConstants;
 
 /**
- * This subsystem has been physically removed from the robot in the offseason,
- * and this code is no longer used.
+ * Subsystem for the robot's two climbing pistons.
+ * 
+ * <p><b>This subsystem has been physically removed from the robot in the offseason,
+ * and this code is no longer used.</b>
  */
-public class Climber extends SubsystemBase {
+public class Climber implements Subsystem {
     // Create DoubleSolenoid objects
     private DoubleSolenoid leftClimber = new DoubleSolenoid(
-        HardwareConstants.CLIMBER_PH_CAN,   // Pneumatic hub CAN id
+        HardwareConstants.kCLIMBER_PH_CAN,   // Pneumatic hub CAN id
         PneumaticsModuleType.REVPH,         // This is a REV Pneumatics hub
-        ClimberConstants.LEFT_UP_CHANNEL,   // The channel that makes it go up
-        ClimberConstants.LEFT_DOWN_CHANNEL  // The channel that makes it go down
+        ClimberConstants.kLEFT_UP_CHANNEL,   // The channel that makes it go up
+        ClimberConstants.kLEFT_DOWN_CHANNEL  // The channel that makes it go down
     );
 
     private DoubleSolenoid rightClimber = new DoubleSolenoid(
-        HardwareConstants.CLIMBER_PH_CAN, 
+        HardwareConstants.kCLIMBER_PH_CAN,
         PneumaticsModuleType.REVPH,
-        ClimberConstants.RIGHT_UP_CHANNEL,
-        ClimberConstants.RIGHT_DOWN_CHANNEL
+        ClimberConstants.kRIGHT_UP_CHANNEL,
+        ClimberConstants.kRIGHT_DOWN_CHANNEL
     );
 
-    // The compressor
-    private Compressor compressor = new Compressor(
-        HardwareConstants.CLIMBER_PH_CAN, 
-        PneumaticsModuleType.REVPH
-    );
-
-    // Constructor
+    /**
+     * Instantiate and config a new Climber subsystem
+     */
     public Climber() {
-        // Stop compressor from turning on
-        compressor.enableAnalog(20.0, 50.0);
-
         // Disable on startup
         setClimberState(false);
+
+        register();
     }
 
-    // Set climber state
+    /**
+     * Sets the climber's position
+     * @param up true = hooks up, false = hooks down
+     */
     public void setClimberState(boolean up) {
         if (!up) {
             leftClimber.set(Value.kForward);
@@ -52,14 +51,5 @@ public class Climber extends SubsystemBase {
             leftClimber.set(Value.kReverse);
             rightClimber.set(Value.kReverse);
         }
-    }
-
-    // For logging, this will return if the air tanks are full
-    public double getPressure() {
-        return compressor.getPressure();
-    }
-
-    public boolean pressureFull() {
-        return !compressor.getPressureSwitchValue();
     }
 }
