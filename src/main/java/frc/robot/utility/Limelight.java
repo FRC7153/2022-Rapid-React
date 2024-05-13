@@ -66,15 +66,17 @@ public class Limelight {
      * @return Whether the limelight is still responding
      */
     public boolean isAlive() {
-        double newHeartBeat = heartbeatSub.get(lastHeartBeat);
+        double newHeartBeat = heartbeatSub.get();
 
-        if (newHeartBeat != lastHeartBeat) {
+        if (newHeartBeat == -1.0) {
+            // Limelight is not publishing a heartbeat!
+            return false;
+        } else if (newHeartBeat != lastHeartBeat) {
             // Limelight has pinged!
             lastHeartBeat = newHeartBeat;
             lastHeartBeatTimeStamp = Timer.getFPGATimestamp();
             return true;
-        } else if (lastHeartBeatTimeStamp != -1.0 && 
-                Timer.getFPGATimestamp() - lastHeartBeatTimeStamp <= LimelightConstants.kCACHE_TIMEOUT) {
+        } else if (Timer.getFPGATimestamp() - lastHeartBeatTimeStamp <= LimelightConstants.kCACHE_TIMEOUT) {
             // Limelight has pinged recently!
             return true;
         } else {
