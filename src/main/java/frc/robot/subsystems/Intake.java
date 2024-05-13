@@ -50,7 +50,7 @@ public class Intake implements Subsystem {
             IntakeConstants.kMIN_PRESSURE, IntakeConstants.kMAX_PRESSURE);
 
         // Disable on startup
-        setIntakeState(true);
+        setIntakeState(false);
 
         register();
     }
@@ -59,7 +59,7 @@ public class Intake implements Subsystem {
      * Sets the default functionality of this subsystem. (The intake stowed)
      */
     public void initDefaultCommand() {
-        setDefaultCommand(new InstantCommand(() -> this.setIntakeState(true), this));
+        setDefaultCommand(new InstantCommand(() -> this.setIntakeState(false), this));
     }
 
     /**
