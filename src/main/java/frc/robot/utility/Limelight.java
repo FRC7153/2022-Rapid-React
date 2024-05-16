@@ -27,6 +27,9 @@ public class Limelight {
 
         NetworkTable nt = NetworkTableInstance.getDefault().getTable(this.name);
         heartbeatSub = nt.getDoubleTopic("hb").subscribe(-1.0);
+
+        // Enforce pipeline 0
+        LimelightHelpers.setPipelineIndex(this.name, 0);
     }
 
     /**
