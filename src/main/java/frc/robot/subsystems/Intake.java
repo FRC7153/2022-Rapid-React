@@ -21,15 +21,15 @@ public class Intake implements Subsystem {
     private DoubleSolenoid leftPiston = new DoubleSolenoid(
         HardwareConstants.kINTAKE_PH_CAN,    // Pneumatics hub CAN ID
         PneumaticsModuleType.REVPH,         // This is a REV Pneumatics Hub
-        IntakeConstants.kLEFT_IN_CHANNEL,    // The channel that makes it extend
-        IntakeConstants.kLEFT_OUT_CHANNEL    // The channel that makes it retract
+        IntakeConstants.kLEFT_OUT_CHANNEL,    // The channel that makes it extend
+        IntakeConstants.kLEFT_IN_CHANNEL    // The channel that makes it retract
     );
 
     private DoubleSolenoid rightPiston = new DoubleSolenoid(
         HardwareConstants.kINTAKE_PH_CAN, 
         PneumaticsModuleType.REVPH, 
-        IntakeConstants.kRIGHT_IN_CHANNEL, 
-        IntakeConstants.kRIGHT_OUT_CHANNEL
+        IntakeConstants.kRIGHT_OUT_CHANNEL, 
+        IntakeConstants.kRIGHT_IN_CHANNEL
     );
 
     private Compressor compressor = new Compressor(

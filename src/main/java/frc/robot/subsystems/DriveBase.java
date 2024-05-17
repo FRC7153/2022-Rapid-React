@@ -36,10 +36,10 @@ public class DriveBase implements Subsystem {
      */
     public DriveBase() {
         // These wheels are inverted
-        wheel_fl.setInverted(false);
-        wheel_fr.setInverted(true);
-        wheel_rr.setInverted(true);
-        wheel_rl.setInverted(false);
+        wheel_fl.setInverted(true);
+        wheel_fr.setInverted(false);
+        wheel_rr.setInverted(false);
+        wheel_rl.setInverted(true);
 
         // Init drive base
         mecDrive = new MecanumDrive(wheel_fl, wheel_rl, wheel_fr, wheel_rr);
@@ -64,7 +64,7 @@ public class DriveBase implements Subsystem {
      * will drive relative to itself.
      */
     public void driveOpenLoop(double y, double x, double rot, boolean fieldOriented) {
-        // Sanity check all the speeds (note x is inverted)
+        // Sanity check all the speeds
         x = MathUtil.clamp(x * -maxSpeed, -1.0, 1.0);
         y = MathUtil.clamp(y * maxSpeed, -1.0, 1.0);
         rot = MathUtil.clamp(rot * maxSpeed, -1.0, 1.0);
@@ -96,28 +96,28 @@ public class DriveBase implements Subsystem {
      * @return The gyro's yaw, in degrees (CCW+)
      */
     public double getYaw() {
-        return gyro.getRoll();
+        return gyro.getYaw();
     }
 
     /**
      * @return The gyro's pitch, in degrees (CCW+)
      */
     public double getPitch() {
-        return gyro.getYaw();
+        return gyro.getPitch();
     }
 
     /**
      * @return The gyro's roll, in degrees (CCW+)
      */
     public double getRoll() {
-        return gyro.getPitch();
+        return gyro.getRoll();
     }
 
     /**
-     * @return A pretty-printed gyro output in "roll, pitch, yaw" format.
+     * @return A pretty-printed gyro output in "yaw, pitch, roll" format.
      */
     public String prettyPrintGyro() {
-        return String.format("%f, %f, %f", getRoll(), getPitch(), getYaw());
+        return String.format("%f, %f, %f", getYaw(), getPitch(), getRoll());
     }
 
     /**

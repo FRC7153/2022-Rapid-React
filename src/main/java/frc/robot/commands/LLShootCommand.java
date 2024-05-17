@@ -34,7 +34,8 @@ public class LLShootCommand extends ParallelCommandGroup {
                     shooter.setShootVelocity(ShooterConstants.kSHOOT_LOW_SPEED);
                 } else {
                     dist = MathUtil.clamp(dist, 0.0, 4.5); // Sanity checks
-                    shooter.setShootVelocity(TrajectoryConstants.TARGET_REGRESSION_V2(dist));
+                    //System.out.printf("Distance -> %f\n", dist);
+                    shooter.setShootVelocity(TrajectoryConstants.TARGET_REGRESSION_V3(dist));
                 }
             }).repeatedly()
         );

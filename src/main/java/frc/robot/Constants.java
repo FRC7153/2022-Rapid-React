@@ -50,7 +50,8 @@ public class Constants {
         }
 
         /**
-         * Shooter velocity regression for apriltags around the green trash can.
+         * Shooter velocity regression for apriltags around the green trash can, with Limelight
+         * 3G.
          * 
          * <p>{@code y = -277.698x^2 + 2500.87x - 2158.17}
          * @param d The distance to the trash can (meters)
@@ -58,6 +59,18 @@ public class Constants {
          */
         public static final double TARGET_REGRESSION_V2(double d) {
             return -277.698 * d * d + 2500.87 * d - 2158.17;
+        }
+
+        /**
+         * Shooter velocity regression for apriltags around the green trash can, with Limelight
+         * 2+.
+         * 
+         * <p>{@code y = 2.48344x^2 + 911.863x + 815.438}
+         * @param d The distance to the trash can (meters)
+         * @return The shoot velocity (rpm)
+         */
+        public static final double TARGET_REGRESSION_V3(double d) {
+            return 2.48344 * d * d + 911.863 * d + 815.438;
         }
     }
 
@@ -69,7 +82,7 @@ public class Constants {
     }
 
     public static final class LimelightConstants {
-        public static final double kCACHE_TIMEOUT = 1.5; // seconds
+        public static final double kCACHE_TIMEOUT = 0.75; // seconds
         public static final String kNT_NAME = "limelight-aetos"; // Host name
 
         /**

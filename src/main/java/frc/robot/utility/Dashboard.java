@@ -22,7 +22,7 @@ public class Dashboard {
 
   // Drive tab
   private GenericPublisher analogPressureOut, gyroOut, digitalPressureOut, limelightAliveOut,
-    shooterErrOut, currentOut;
+    shooterErrOut, currentOut, targetDistanceOut;
 
   private GenericEntry fieldOrientedEntry, manualShootVeloEntry;
 
@@ -105,6 +105,12 @@ public class Dashboard {
       .withProperties(Map.of("Min", 0.0, "Max", 240.0))
       .getEntry();
 
+    // Distance to target output
+    targetDistanceOut = driveTab.add("Target Distance (m)", -1.0)
+      .withSize(1, 1)
+      .withPosition(8, 2)
+      .getEntry();
+
     // Init manual shoot velo
     if (BuildConstants.kMANUAL_SHOOTING) {
       manualShootVeloEntry = driveTab.add("Manual Shoot Velocity (RPM)", 0.0)
@@ -122,6 +128,7 @@ public class Dashboard {
     limelightAliveOut.setBoolean(shooterSys.limelight.isAlive());
     shooterErrOut.setDouble(shooterSys.getShootVelocityErrorPercentage());
     currentOut.setDouble(pdh.getTotalCurrent());
+    targetDistanceOut.setDouble(shooterSys.limelight.getDistanceToTrashCan());
   }
 
   /**

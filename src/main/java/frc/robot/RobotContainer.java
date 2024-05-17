@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.DriveBaseConstants;
+import frc.robot.commands.AutoCenterCommand;
 import frc.robot.commands.LLShootCommand;
 import frc.robot.commands.ManualShootCommand;
 import frc.robot.commands.TeleopDriveCommand;
@@ -51,13 +52,13 @@ public class RobotContainer {
     drive.setDefaultCommand(new TeleopDriveCommand(
       drive,
       dashboard,
-      driveControl::getLeftY,
-      driveControl::getLeftX,
+      () -> - driveControl.getLeftY(),
+      () -> -driveControl.getLeftX(),
       driveControl::getRightX
     ));
 
     // Aim bindings
-    /*driveControl.leftBumper().whileTrue(new AutoCenterCommand(drive, shooter));*/
+    driveControl.leftBumper().whileTrue(new AutoCenterCommand(drive, shooter));
 
     // Intake Bindings
     driveControl.leftTrigger().whileFalse(new InstantCommand(() -> intake.setIntakeState(false), intake).repeatedly());

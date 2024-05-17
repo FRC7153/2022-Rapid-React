@@ -1,10 +1,10 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Shooter;
 
-public class AutoCenterCommand extends CommandBase {
+public class AutoCenterCommand extends Command {
     // Subsystem
     private DriveBase drive;
     private Shooter shooter;
@@ -20,21 +20,23 @@ public class AutoCenterCommand extends CommandBase {
     // Start
     @Override
     public void initialize() {
-        drive.drive(0.0, 0.0, 0.0);
+        drive.driveOpenLoop(0.0, 0.0, 0.0, false);
     }
 
     // Run
     @Override
     public void execute() {
-        drive.drive(
-            0.0, 0.0,
-            0.025 * shooter.limelight.getTX()
+        drive.driveOpenLoop(
+            0.0, 
+            0.0, 
+            0.025 * shooter.limelight.getAngleToTrashCan(), 
+            false
         );
     }
 
     // End
     @Override
     public void end(boolean terminated) {
-        drive.drive(0.0, 0.0, 0.0);
+        drive.driveOpenLoop(0.0, 0.0, 0.0, false);
     }
 }

@@ -57,6 +57,13 @@ public class Limelight {
     }
 
     /**
+     * @return Vertical angle (deg) to the best AprilTag target (tx)
+     */
+    public double getAngleToTrashCan() {
+        return LimelightHelpers.getTX(name);        
+    }
+
+    /**
      * @return If the camera saw tags on the last call to {@code getPose()} or 
      * {@code getDistanceToCenter()}
      */
