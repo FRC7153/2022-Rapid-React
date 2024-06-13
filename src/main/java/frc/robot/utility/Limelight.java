@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.utility.LimelightHelpers.PoseEstimate;
 
+import java.util.UUID;
+
 public class Limelight {
     // Cache
     private boolean seesTags = false; // If tags have been seen
@@ -93,6 +95,18 @@ public class Limelight {
             // Limelight has not pinged recently!
             return false;
         }
+    }
+
+    /**
+     * Takes a snapshot with the limelight, and gives it a random UUID name.
+     * This only works if the kTAKE_PICTURES configuration is set to true.
+     */
+    public void takeSnapshot() {
+        if (!LimelightConstants.kTAKE_PICTURES) return;
+
+        String snapshotName = UUID.randomUUID().toString();
+        LimelightHelpers.takeSnapshot(name, snapshotName);
+        System.out.printf("Limelight captured: '%s'\n", snapshotName);
     }
 
     /**

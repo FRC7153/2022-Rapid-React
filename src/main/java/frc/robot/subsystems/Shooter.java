@@ -7,6 +7,9 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.HardwareConstants;
@@ -24,7 +27,10 @@ public class Shooter implements Subsystem {
     private SparkPIDController shootPID = shooter1.getPIDController();
     private RelativeEncoder shooterEnc = shooter1.getEncoder();
 
-    public TalonFX indexerMotor = new TalonFX(HardwareConstants.kINDEXER_CAN);
+    private TalonFX indexerMotor = new TalonFX(HardwareConstants.kINDEXER_CAN);
+
+    // Output to NT for debugging
+    private DoublePublisher indexerVeloOut;
 
     // Limelight
     public Limelight limelight = new Limelight(LimelightConstants.kNT_NAME);
@@ -45,6 +51,10 @@ public class Shooter implements Subsystem {
 
         shooter1.setInverted(true);
         shooter2.follow(shooter1, true);
+
+        // Get NT logging output
+        NetworkTable nt = NetworkTableInstance.getDefault().getTable("Debug");
+        indexerVeloOut = nt.getDoubleTopic("Indexer Velo").publish();
 
         // Disable on startup
         setShootVelocity(0.0);
@@ -98,5 +108,11 @@ public class Shooter implements Subsystem {
     public double getShootVelocityErrorPercentage() {
         if (velocitySetpoint == 0.0) return 1.0;
         return (shooterEnc.getVelocity() / velocitySetpoint);
+    }
+
+    @Override
+    public void periodic() {
+        // Output the indexer velocity (for debugging)
+        indexerVeloOut.set(indexerMotor.getVelocity().getValueAsDouble());
     }
 }

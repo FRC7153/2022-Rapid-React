@@ -3,10 +3,6 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class Constants {
-    public static final class BuildConstants {
-        public static final boolean kMANUAL_SHOOTING = false; // Shooter velocity input on Shuffleboard
-    }
-
     public static final class DriveBaseConstants {
         public static final double kSLOW_MAX_SPEED = 0.3;
         public static final double kFAST_MAX_SPEED = 0.55;
@@ -21,20 +17,20 @@ public class Constants {
         public static final int kLEFT_IN_CHANNEL = 2;
         public static final int kRIGHT_IN_CHANNEL = 0;
 
-        public static final double kMIN_PRESSURE = 20; // PSI level to enable compressor
-        public static final double kMAX_PRESSURE = 60; // PSI level to disable compressor
+        public static final double kMIN_PRESSURE = 40; // PSI level to enable compressor
+        public static final double kMAX_PRESSURE = 120; // PSI level to disable compressor
     }
 
     public static final class ShooterConstants {
         public static final double kINDEXER_SPEED = 0.5;
 
-        public static final double kSHOOT_LOW_SPEED = 2250; // default RPM for shooting
+        public static final double kSHOOT_LOW_SPEED = 1900; // default RPM for shooting without target
 
         public static final double kSHOOT_P = 0.00008;
         public static final double kSHOOT_I = 6e-7;
         public static final double kSHOOT_D = 0.00002;
 
-        public static final double kINDEXER_TIMEOUT = 0.9; // seconds
+        public static final double kINDEXER_TIMEOUT = 1.15; // seconds
     }
 
     public static final class TrajectoryConstants {
@@ -70,7 +66,19 @@ public class Constants {
          * @return The shoot velocity (rpm)
          */
         public static final double TARGET_REGRESSION_V3(double d) {
-            return 2.48344 * d * d + 911.863 * d + 815.438;
+            return 2.48344 * d * d + 911.863 * d + 845.438;
+        }
+
+        /**
+         * Shooter velocity regression for apriltags around the green trash can, with Limelight
+         * 2+. This produces lower velocities than v3.
+         * 
+         * <p>{@code y = 947.335x^2 - 2113.09x + 3251.95}
+         * @param d The distance to the trash can (meters)
+         * @return The shoot velocity (rpm)
+         */
+        public static final double TARGET_REGRESSION_V4(double d) {
+            return 947.335 * d * d - 2113.09 * d + 3251.85;
         }
     }
 
@@ -84,6 +92,7 @@ public class Constants {
     public static final class LimelightConstants {
         public static final double kCACHE_TIMEOUT = 0.75; // seconds
         public static final String kNT_NAME = "limelight-aetos"; // Host name
+        public static final boolean kTAKE_PICTURES = true;
 
         /**
          * Trash can's position on the april tag map file.

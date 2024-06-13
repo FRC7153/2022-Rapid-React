@@ -49,6 +49,9 @@ public class Intake implements Subsystem {
         compressor.enableHybrid(
             IntakeConstants.kMIN_PRESSURE, IntakeConstants.kMAX_PRESSURE);
 
+        // To turn off compressor:
+        //compressor.disable();
+
         // Disable on startup
         setIntakeState(false);
 

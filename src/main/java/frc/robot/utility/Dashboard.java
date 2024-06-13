@@ -2,11 +2,10 @@ package frc.robot.utility;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.GenericPublisher;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.Constants.BuildConstants;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -25,6 +24,7 @@ public class Dashboard {
     shooterErrOut, currentOut, targetDistanceOut;
 
   private GenericEntry fieldOrientedEntry, manualShootVeloEntry;
+  private SendableChooser<Integer> shootStrategyEntry = new SendableChooser<>();
 
   /**
    * Configs the driver-facing Shuffleboard dashboard.
@@ -49,23 +49,23 @@ public class Dashboard {
       .withProperties(Map.of("Min", 0, "Max", 125))
       .getEntry();
     
-    // Gyro output
-    gyroOut = driveTab.add("Gyro (Yaw, Pitch, Roll)", "?, ?, ?")
-      .withSize(2, 1)
+    // Gyro output (yaw, pitch, roll)
+    gyroOut = driveTab.add("Gyro (Y, P, R)", "?, ?, ?")
+      .withSize(1, 1)
       .withPosition(0, 1)
       .getEntry();
 
     // Digital pressure output
     digitalPressureOut = driveTab.add("Pressure Full", false)
       .withSize(1, 1)
-      .withPosition(0, 2)
+      .withPosition(1, 1)
       .withWidget(BuiltInWidgets.kBooleanBox)
       .getEntry();
 
     // Limelight alive output
     limelightAliveOut = driveTab.add("Limelight Alive", false)
       .withSize(1, 1)
-      .withPosition(1, 2)
+      .withPosition(6, 2)
       .withWidget(BuiltInWidgets.kBooleanBox)
       .getEntry();
 
@@ -78,7 +78,7 @@ public class Dashboard {
 
     // Mecanum state output
     driveTab.add("Mecanum Drivebase", driveSys.getMecanumSendable())
-      .withSize(4, 2)
+      .withSize(3, 2)
       .withPosition(5, 0)
       .withWidget(BuiltInWidgets.kMecanumDrive);
 
@@ -93,7 +93,7 @@ public class Dashboard {
     // Field oriented switch input
     fieldOrientedEntry = driveTab.add("Field Oriented", false)
       .withSize(1, 1)
-      .withPosition(6, 2)
+      .withPosition(0, 2)
       .withWidget(BuiltInWidgets.kToggleSwitch)
       .getEntry();
 
@@ -111,11 +111,23 @@ public class Dashboard {
       .withPosition(8, 2)
       .getEntry();
 
-    // Init manual shoot velo
-    if (BuildConstants.kMANUAL_SHOOTING) {
-      manualShootVeloEntry = driveTab.add("Manual Shoot Velocity (RPM)", 0.0)
-        .getEntry(); 
-    }
+    // Manual shoot velo input
+    manualShootVeloEntry = driveTab.add("Manual Shoot Velocity (RPM)", 0.0)
+      .getEntry(); 
+
+    // Shoot strategy dropdown
+    driveTab.add("Strategy", shootStrategyEntry)
+      .withSize(1, 1)
+      .withPosition(1, 2);
+
+    shootStrategyEntry.onChange((Integer newStrategy) -> {
+      System.out.printf("Shoot strategy has changed: %d\n", newStrategy);
+    });
+
+    shootStrategyEntry.addOption("Low Constant", -1); // Constant low velocity
+    shootStrategyEntry.addOption("Manual", 0); // Manual input from Shuffleboard
+    shootStrategyEntry.addOption("Reg v3", 3); // Regression V3
+    shootStrategyEntry.setDefaultOption("Reg v4", 4); // Regression V4
   }
 
   /**
@@ -144,11 +156,14 @@ public class Dashboard {
    * @return RPM
    */
   public double getManualShootVelocity() {
-    if (!BuildConstants.kMANUAL_SHOOTING) {
-      DriverStation.reportError("getManualShootVelocity() called, but manual shooting mode is disabled in this build!", false);
-      return 0.0;
-    }
-
     return manualShootVeloEntry.getDouble(0.0);
+  }
+
+  /**
+   * Gets the currently selected shoot strategy.
+   * @return The unique integer associated with this option.
+   */
+  public Integer getShootStrategy() {
+    return shootStrategyEntry.getSelected();
   }
 }

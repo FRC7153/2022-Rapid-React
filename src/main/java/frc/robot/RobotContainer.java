@@ -7,13 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.DriveBaseConstants;
 import frc.robot.commands.AutoCenterCommand;
-import frc.robot.commands.LLShootCommand;
-import frc.robot.commands.ManualShootCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Intake;
@@ -32,13 +29,12 @@ public class RobotContainer {
   private PDH pdh = new PDH();
 
   // Controllers and dashboard
-  private CommandXboxController driveControl = new CommandXboxController(0);
+  private CommandXboxController driveController = new CommandXboxController(0);
   private Dashboard dashboard = new Dashboard(drive, intake, shooter, pdh);
 
   // Constructor
   public RobotContainer() {
     // Set default commands
-    drive.initDefaultCommand();
     intake.initDefaultCommand();
     shooter.initDefaultCommand();
 
@@ -52,37 +48,32 @@ public class RobotContainer {
     drive.setDefaultCommand(new TeleopDriveCommand(
       drive,
       dashboard,
-      () -> - driveControl.getLeftY(),
-      () -> -driveControl.getLeftX(),
-      driveControl::getRightX
+      () -> - driveController.getLeftY(),
+      () -> -driveController.getLeftX(),
+      () -> driveController.getRightX()
     ));
 
     // Aim bindings
-    driveControl.leftBumper().whileTrue(new AutoCenterCommand(drive, shooter));
+    driveController.leftBumper().whileTrue(new AutoCenterCommand(drive, shooter));
 
     // Intake Bindings
-    driveControl.leftTrigger().whileFalse(new InstantCommand(() -> intake.setIntakeState(false), intake).repeatedly());
-    driveControl.leftTrigger().whileTrue(new InstantCommand(() -> intake.setIntakeState(true), intake).repeatedly());
+    driveController.leftTrigger().whileFalse(new InstantCommand(() -> intake.setIntakeState(false), intake).repeatedly());
+    driveController.leftTrigger().whileTrue(new InstantCommand(() -> intake.setIntakeState(true), intake).repeatedly());
 
     // Climber Bindings (removed)
-    /*driveControl.y().toggleOnTrue(new InstantCommand(() -> climber.setClimberState(true), climber));
-    driveControl.y().toggleOnFalse(new InstantCommand(() -> climber.setClimberState(false), climber));*/
+    /*driveController.y().toggleOnTrue(new InstantCommand(() -> climber.setClimberState(true), climber));
+    driveController.y().toggleOnFalse(new InstantCommand(() -> climber.setClimberState(false), climber));*/
 
     // Shoot Bindings
-    driveControl.rightTrigger().whileTrue(
-        (BuildConstants.kMANUAL_SHOOTING) ? // Ternary conditional interpreted on initialization
-        new ManualShootCommand(drive, shooter, dashboard) : // For regression tuning
-        new LLShootCommand(shooter)// For regression shooting 
-    );
-
-    driveControl.rightTrigger().onFalse(new ParallelCommandGroup(
-      new InstantCommand(() -> shooter.setIndexerState(false)),
-      new InstantCommand(() -> shooter.setShootVelocity(0.0), shooter)
-    ));
+    driveController.rightTrigger().whileTrue(new ShootCommand(shooter, dashboard));
 
     // Sprint Bindings
-    driveControl.leftStick().onTrue(new InstantCommand(() -> drive.setMaxSpeed(DriveBaseConstants.kFAST_MAX_SPEED)));
-    driveControl.leftStick().onFalse(new InstantCommand(() -> drive.setMaxSpeed(DriveBaseConstants.kSLOW_MAX_SPEED)));
+    driveController.leftStick().onTrue(new InstantCommand(() -> drive.setMaxSpeed(DriveBaseConstants.kFAST_MAX_SPEED)));
+    driveController.leftStick().onFalse(new InstantCommand(() -> drive.setMaxSpeed(DriveBaseConstants.kSLOW_MAX_SPEED)));
+
+    // Limelight snapshot bindings
+    driveController.a()
+      .onTrue(new InstantCommand(shooter.limelight::takeSnapshot));
   }
 
   // Auto command

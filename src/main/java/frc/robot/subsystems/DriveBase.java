@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.DriveBaseConstants;
 import frc.robot.Constants.HardwareConstants;
@@ -47,13 +46,6 @@ public class DriveBase implements Subsystem {
         register();
     }
 
-    // Sets the default functionality of this subsystem
-    public void initDefaultCommand() {
-        setDefaultCommand(
-            new InstantCommand(() -> driveOpenLoop(0.0, 0.0, 0.0, false), 
-            this));
-    }
-
     /**
      * Drives the robot using open loop control (all values are percentages of the motor's maximum
      * duty cycle, not actually 'real-world' units)
@@ -79,6 +71,7 @@ public class DriveBase implements Subsystem {
 
     @Override
     public void periodic() {
+        // This will prevent warnings if drive methods aren't being called periodically
         mecDrive.feedWatchdog();
     }
 
@@ -117,7 +110,7 @@ public class DriveBase implements Subsystem {
      * @return A pretty-printed gyro output in "yaw, pitch, roll" format.
      */
     public String prettyPrintGyro() {
-        return String.format("%f, %f, %f", getYaw(), getPitch(), getRoll());
+        return String.format("%.1f, %.1f, %.1f", getYaw(), getPitch(), getRoll());
     }
 
     /**

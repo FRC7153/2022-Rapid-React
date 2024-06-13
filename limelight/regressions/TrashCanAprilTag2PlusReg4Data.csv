@@ -1,0 +1,12 @@
+/ Regression for the 36h11 AprilTags around the green trash can, using the 
+/ LimeLight 2+. Done on 6-12-24.
+/ See Constants.TrajectoryConstants.TARGET_REGRESSION_V4 for implementation.
+Distance (meters),Velocity (rpm)
+1.395,2150
+1.535,2250
+1.63,2300
+1.768,2480
+1.899,2680
+2.00,2800
+/ y ~ 947.335x^2 - 2113.09x + 3251.85
+/ R^2 = 0.9953
