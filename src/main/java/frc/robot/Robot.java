@@ -19,6 +19,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+
+    // Do not allow the mecanum drive base to be controlled through the Shuffleboard sendable
+    // while in Test mode:
+    enableLiveWindowInTest(false);
   }
 
   @Override
