@@ -80,6 +80,13 @@ public class Constants {
         public static final double TARGET_REGRESSION_V4(double d) {
             return 947.335 * d * d - 2113.09 * d + 3251.85;
         }
+
+        /**
+         * 7/31/24
+         */
+        public static final double TARGET_REGRESSION_V5(double d) {
+            return 644.555 * d * d - 1622.77 * d + 3056.59 + 30.0;
+        }
     }
 
     public static final class ClimberConstants {

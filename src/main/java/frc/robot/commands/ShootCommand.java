@@ -46,6 +46,7 @@ public class ShootCommand extends Command {
             case 0: return dashboard.getManualShootVelocity();
             case 3: return TrajectoryConstants.TARGET_REGRESSION_V3(distance);
             case 4: return TrajectoryConstants.TARGET_REGRESSION_V4(distance);
+            case 5: return TrajectoryConstants.TARGET_REGRESSION_V5(distance);
             default: {
                 // This will run if none of the above cases are matched
                 DriverStation.reportWarning(

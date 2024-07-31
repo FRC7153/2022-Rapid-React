@@ -127,7 +127,8 @@ public class Dashboard {
     shootStrategyEntry.addOption("Low Constant", -1); // Constant low velocity
     shootStrategyEntry.addOption("Manual", 0); // Manual input from Shuffleboard
     shootStrategyEntry.addOption("Reg v3", 3); // Regression V3
-    shootStrategyEntry.setDefaultOption("Reg v4", 4); // Regression V4
+    shootStrategyEntry.addOption("Reg v4", 4); // Regression V4
+    shootStrategyEntry.setDefaultOption("Reg v5", 5);
   }
 
   /**
