@@ -14,25 +14,25 @@ import frc.robot.Constants.IntakeConstants;
 /**
  * The subsystem for controlling the intake.
  */
-public class Intake implements Subsystem {
+public final class Intake implements Subsystem {
     // Hardware
-    private TalonSRX intakeWheel = new TalonSRX(HardwareConstants.kINTAKE_WHEEL_CAN);
+    private final TalonSRX intakeWheel = new TalonSRX(HardwareConstants.kINTAKE_WHEEL_CAN);
     
-    private DoubleSolenoid leftPiston = new DoubleSolenoid(
+    private final DoubleSolenoid leftPiston = new DoubleSolenoid(
         HardwareConstants.kINTAKE_PH_CAN,    // Pneumatics hub CAN ID
         PneumaticsModuleType.REVPH,         // This is a REV Pneumatics Hub
         IntakeConstants.kLEFT_OUT_CHANNEL,    // The channel that makes it extend
         IntakeConstants.kLEFT_IN_CHANNEL    // The channel that makes it retract
     );
 
-    private DoubleSolenoid rightPiston = new DoubleSolenoid(
+    private final DoubleSolenoid rightPiston = new DoubleSolenoid(
         HardwareConstants.kINTAKE_PH_CAN, 
         PneumaticsModuleType.REVPH, 
         IntakeConstants.kRIGHT_OUT_CHANNEL, 
         IntakeConstants.kRIGHT_IN_CHANNEL
     );
 
-    private Compressor compressor = new Compressor(
+    private final Compressor compressor = new Compressor(
         HardwareConstants.kCLIMBER_PH_CAN, 
         PneumaticsModuleType.REVPH
     );

@@ -1,11 +1,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
@@ -20,17 +23,17 @@ import frc.robot.utility.Limelight;
 /**
  * Subsystem for controlling the shooter and indexer.
  */
-public class Shooter implements Subsystem {
+public final class Shooter implements Subsystem {
     // Motors
-    private CANSparkMax shooter1 = new CANSparkMax(HardwareConstants.kSHOOTER_1_CAN, MotorType.kBrushless);
-    private CANSparkMax shooter2 = new CANSparkMax(HardwareConstants.kSHOOTER_2_CAN, MotorType.kBrushless);
-    private SparkPIDController shootPID = shooter1.getPIDController();
-    private RelativeEncoder shooterEnc = shooter1.getEncoder();
+    private final SparkMax shooter1 = new SparkMax(HardwareConstants.kSHOOTER_1_CAN, MotorType.kBrushless);
+    private final SparkMax shooter2 = new SparkMax(HardwareConstants.kSHOOTER_2_CAN, MotorType.kBrushless);
+    private final SparkClosedLoopController shootPID = shooter1.getClosedLoopController();
+    private final RelativeEncoder shooterEnc = shooter1.getEncoder();
 
-    private TalonFX indexerMotor = new TalonFX(HardwareConstants.kINDEXER_CAN);
+    private final TalonFX indexerMotor = new TalonFX(HardwareConstants.kINDEXER_CAN);
 
     // Output to NT for debugging
-    private DoublePublisher indexerVeloOut;
+    private final DoublePublisher indexerVeloOut;
 
     // Limelight
     public Limelight limelight = new Limelight(LimelightConstants.kNT_NAME);
@@ -43,14 +46,10 @@ public class Shooter implements Subsystem {
      */
     public Shooter() {
         // Config shooter PID
-        shootPID.setP(ShooterConstants.kSHOOT_P, 0);
-        shootPID.setI(ShooterConstants.kSHOOT_I, 0);
-        shootPID.setD(ShooterConstants.kSHOOT_D, 0);
-        shootPID.setFF(0.0, 0);
-        shootPID.setOutputRange(-1.0, 1.0, 0);
-
-        shooter1.setInverted(true);
-        shooter2.follow(shooter1, true);
+        shooter1.configure(ShooterConstants.SHOOTER_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        
+        shooter2.configure(ShooterConstants.SHOOTER_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        shooter2.configure(new SparkMaxConfig().follow(shooter1, true), ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
         // Get NT logging output
         NetworkTable nt = NetworkTableInstance.getDefault().getTable("Debug");
@@ -84,7 +83,7 @@ public class Shooter implements Subsystem {
             shooter2.stopMotor();
             velocitySetpoint = 0.0;
         } else {
-            shootPID.setReference(speed, ControlType.kVelocity, 0);
+            shootPID.setReference(speed, ControlType.kVelocity);
             velocitySetpoint = speed;
         }
         

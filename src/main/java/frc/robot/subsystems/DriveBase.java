@@ -1,13 +1,17 @@
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.AHRS;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.DriveBaseConstants;
@@ -18,27 +22,30 @@ import frc.robot.Constants.HardwareConstants;
  */
 public class DriveBase implements Subsystem {
     // Hardware
-    private CANSparkMax wheel_fl = new CANSparkMax(HardwareConstants.kFL_DRIVE_CAN, MotorType.kBrushless);
-    private CANSparkMax wheel_fr = new CANSparkMax(HardwareConstants.kFR_DRIVE_CAN, MotorType.kBrushless);
-    private CANSparkMax wheel_rl = new CANSparkMax(HardwareConstants.kRL_DRIVE_CAN, MotorType.kBrushless);
-    private CANSparkMax wheel_rr = new CANSparkMax(HardwareConstants.kRR_DRIVE_CAN, MotorType.kBrushless);
+    private final SparkMax wheel_fl = new SparkMax(HardwareConstants.kFL_DRIVE_CAN, MotorType.kBrushless);
+    private final SparkMax wheel_fr = new SparkMax(HardwareConstants.kFR_DRIVE_CAN, MotorType.kBrushless);
+    private final SparkMax wheel_rl = new SparkMax(HardwareConstants.kRL_DRIVE_CAN, MotorType.kBrushless);
+    private final SparkMax wheel_rr = new SparkMax(HardwareConstants.kRR_DRIVE_CAN, MotorType.kBrushless);
 
     // Drive
-    private MecanumDrive mecDrive;
+    private final MecanumDrive mecDrive;
     private double maxSpeed = DriveBaseConstants.kSLOW_MAX_SPEED;
 
     // IMU
-    private AHRS gyro = new AHRS(SPI.Port.kMXP);
+    private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
 
     /**
      * Instantiate and config a new DriveBase subsystem.
      */
     public DriveBase() {
         // These wheels are inverted
-        wheel_fl.setInverted(true);
-        wheel_fr.setInverted(false);
-        wheel_rr.setInverted(false);
-        wheel_rl.setInverted(true);
+        SparkBaseConfig invertedConfig = new SparkMaxConfig().inverted(true);
+        SparkBaseConfig notInvertedConfig = new SparkMaxConfig().inverted(false);
+
+        wheel_fl.configure(invertedConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        wheel_fr.configure(notInvertedConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        wheel_rr.configure(notInvertedConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        wheel_rl.configure(invertedConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Init drive base
         mecDrive = new MecanumDrive(wheel_fl, wheel_rl, wheel_fr, wheel_rr);

@@ -1,5 +1,9 @@
 package frc.robot;
 
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class Constants {
@@ -26,9 +30,13 @@ public class Constants {
 
         public static final double kSHOOT_LOW_SPEED = 1900; // default RPM for shooting without target
 
-        public static final double kSHOOT_P = 0.00008;
-        public static final double kSHOOT_I = 6e-7;
-        public static final double kSHOOT_D = 0.00002;
+        public static final SparkBaseConfig SHOOTER_CONFIG = new SparkMaxConfig()
+          .inverted(true)
+          .apply(
+            new ClosedLoopConfig()
+              .pidf(0.00008, 6e-7, 0.00002, 0.0)
+              .outputRange(-1.0, 1.0)
+            );
 
         public static final double kINDEXER_TIMEOUT = 1.15; // seconds
     }
