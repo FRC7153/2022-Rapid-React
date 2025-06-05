@@ -1,5 +1,7 @@
 package frc.robot.utility;
 
+import java.util.UUID;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
@@ -8,8 +10,6 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.utility.LimelightHelpers.PoseEstimate;
 
-import java.util.UUID;
-
 public class Limelight {
     // Cache
     private boolean seesTags = false; // If tags have been seen
@@ -17,8 +17,8 @@ public class Limelight {
     private double lastHeartBeatTimeStamp = -1.0; // Timestamp of last heartbeat
 
     // Network Tables
-    private String name;
-    private DoubleSubscriber heartbeatSub;
+    private final String name;
+    private final DoubleSubscriber heartbeatSub;
 
     /**
      * Instantiates a new LimeLight.

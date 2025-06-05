@@ -6,8 +6,8 @@ import frc.robot.subsystems.Shooter;
 
 public class AutoCenterCommand extends Command {
     // Subsystem
-    private DriveBase drive;
-    private Shooter shooter;
+    private final DriveBase drive;
+    private final Shooter shooter;
 
     // Constructor
     public AutoCenterCommand(DriveBase drive, Shooter shooter) {

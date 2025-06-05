@@ -5,17 +5,17 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utility.Dashboard;
+import frc.robot.utility.Regressions;
 
 public class ShootCommand extends Command {
-    private Shooter shooter;
-    private Dashboard dashboard;
+    private final Shooter shooter;
+    private final Dashboard dashboard;
 
     private double limelightDistanceAvg; // Average distance during each shot
     private boolean hasSeenTagsYet; // Whether the limelight has seen tags since command initialized
-    private Timer indexerTimer = new Timer();
+    private final Timer indexerTimer = new Timer();
     private int strategy; // Current shoot strategy (from Shuffleboard)
 
     /**
@@ -44,9 +44,9 @@ public class ShootCommand extends Command {
         switch (strategy) {
             case -1: return ShooterConstants.kSHOOT_LOW_SPEED;
             case 0: return dashboard.getManualShootVelocity();
-            case 3: return TrajectoryConstants.TARGET_REGRESSION_V3(distance);
-            case 4: return TrajectoryConstants.TARGET_REGRESSION_V4(distance);
-            case 5: return TrajectoryConstants.TARGET_REGRESSION_V5(distance);
+            case 3: return Regressions.TARGET_REGRESSION_V3(distance);
+            case 4: return Regressions.TARGET_REGRESSION_V4(distance);
+            case 5: return Regressions.TARGET_REGRESSION_V5(distance);
             default: {
                 // This will run if none of the above cases are matched
                 DriverStation.reportWarning(

@@ -7,11 +7,11 @@ import frc.robot.subsystems.DriveBase;
 import frc.robot.utility.Dashboard;
 
 public class TeleopDriveCommand extends Command {
-    private DriveBase drive;
-    private Dashboard dashboard;
-    private Supplier<Double> ySupplier;
-    private Supplier<Double> xSupplier;
-    private Supplier<Double> rotSupplier;
+    private final DriveBase drive;
+    private final Dashboard dashboard;
+    private final Supplier<Double> ySupplier;
+    private final Supplier<Double> xSupplier;
+    private final Supplier<Double> rotSupplier;
 
     /**
      * Instantiates and configs a new Teleop Drive command, for driving the robot in teleop mode.

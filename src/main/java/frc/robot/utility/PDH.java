@@ -10,7 +10,7 @@ import frc.robot.Constants.HardwareConstants;
  */
 public class PDH {
   // Hardware
-  private PowerDistribution pdh = 
+  private final PowerDistribution pdh = 
     new PowerDistribution(HardwareConstants.kPDH_CAN, ModuleType.kRev);
 
   /**
