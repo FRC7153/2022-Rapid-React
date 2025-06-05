@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -10,9 +11,13 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.HardwareConstants;
@@ -31,15 +36,18 @@ public final class Shooter implements Subsystem {
     private final RelativeEncoder shooterEnc = shooter1.getEncoder();
 
     private final TalonFX indexerMotor = new TalonFX(HardwareConstants.kINDEXER_CAN);
-
-    // Output to NT for debugging
-    private final DoublePublisher indexerVeloOut;
+    private final StatusSignal<AngularVelocity> indexerVelocity = indexerMotor.getVelocity();
 
     // Limelight
-    public Limelight limelight = new Limelight(LimelightConstants.kNT_NAME);
+    private final Limelight limelight = new Limelight(LimelightConstants.kNT_NAME);
 
     // Velocity target
     private double velocitySetpoint = 0.0;
+
+    // Telemetry
+    private final DoublePublisher shooterErrOut, targetDistanceOut, indexerVeloOut;
+    private final DoubleEntry manualShootVeloEntry;
+    private final SendableChooser<Integer> shootStrategyChooser;
     
     /**
      * Instantiate and config the shooter subsystem.
@@ -51,14 +59,36 @@ public final class Shooter implements Subsystem {
         shooter2.configure(ShooterConstants.SHOOTER_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         shooter2.configure(new SparkMaxConfig().follow(shooter1, true), ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
-        // Get NT logging output
-        NetworkTable nt = NetworkTableInstance.getDefault().getTable("Debug");
-        indexerVeloOut = nt.getDoubleTopic("Indexer Velo").publish();
-
         // Disable on startup
         setShootVelocity(0.0);
         setIndexerState(false);
 
+        // Init telemetry
+        NetworkTable nt = NetworkTableInstance.getDefault().getTable("dashboard").getSubTable("shooter");
+
+        shooterErrOut = nt.getDoubleTopic("ShooterError").publish();
+        targetDistanceOut = nt.getDoubleTopic("TargetDistance").publish();
+        indexerVeloOut = nt.getDoubleTopic("IndexerVelo").publish();
+
+        manualShootVeloEntry = nt.getDoubleTopic("ManualShootVelo").getEntry(0.0);
+        manualShootVeloEntry.set(0.0);
+
+        // Init shoot strategy chooser
+        shootStrategyChooser = new SendableChooser<>();
+
+        shootStrategyChooser.onChange((Integer newStrategy) -> {
+            System.out.printf("Shoot strategy has changed: %d\n", newStrategy);
+        });
+
+        shootStrategyChooser.addOption("Low Constant", -1); // Constant low velocity
+        shootStrategyChooser.addOption("Manual", 0); // Manual input from Shuffleboard
+        shootStrategyChooser.addOption("Reg v3", 3); // Regression V3
+        shootStrategyChooser.addOption("Reg v4", 4); // Regression V4
+        shootStrategyChooser.setDefaultOption("Reg v5", 5);
+
+        SmartDashboard.putData("ShootStrategyChooser", shootStrategyChooser);
+
+        // Init subsystem
         register();
     }
 
@@ -109,9 +139,36 @@ public final class Shooter implements Subsystem {
         return (shooterEnc.getVelocity() / velocitySetpoint);
     }
 
-    @Override
-    public void periodic() {
-        // Output the indexer velocity (for debugging)
-        indexerVeloOut.set(indexerMotor.getVelocity().getValueAsDouble());
+    /**
+     * Gets the manual shoot velocity from the dashboard input, supplied by the user.
+     * @return RPM
+     */
+    public double getManualShootVelocity() {
+        return manualShootVeloEntry.get();
+    }
+
+    /**
+     * Gets the currently selected shoot strategy.
+     * @return The unique integer associated with the selected option.
+     */
+    public int getShootStrategy() {
+        return shootStrategyChooser.getSelected();
+    }
+
+    public void log() {
+        indexerVelocity.refresh();
+
+        shooterErrOut.set(getShootVelocityErrorPercentage());
+        targetDistanceOut.set(limelight.getDistanceToTrashCan());
+        indexerVeloOut.set(indexerVelocity.getValueAsDouble());
+
+        limelight.log();
+    }
+
+    /**
+     * @return The limelight
+     */
+    public Limelight getLimelight() {
+        return limelight;
     }
 }

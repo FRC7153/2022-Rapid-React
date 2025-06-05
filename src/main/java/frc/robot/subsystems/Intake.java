@@ -3,6 +3,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -37,6 +41,10 @@ public final class Intake implements Subsystem {
         PneumaticsModuleType.REVPH
     );
 
+    // Telemetry
+    private final DoublePublisher analogPressurePub;
+    private final BooleanPublisher digitalPressurePub;
+
     /**
      * Instantiates and configures a new Intake subsystem. (including the pneumatics hub)
      */
@@ -55,6 +63,13 @@ public final class Intake implements Subsystem {
         // Disable on startup
         setIntakeState(false);
 
+        // Init telemetry
+        NetworkTable nt = NetworkTableInstance.getDefault().getTable("dashboard").getSubTable("intake");
+
+        analogPressurePub = nt.getDoubleTopic("pressureAnalog").publish();
+        digitalPressurePub = nt.getBooleanTopic("pressureDigital").publish();
+
+        // Init subsystem
         register();
     }
 
@@ -81,6 +96,11 @@ public final class Intake implements Subsystem {
             leftPiston.set(DoubleSolenoid.Value.kForward);
             rightPiston.set(DoubleSolenoid.Value.kForward);
         }
+    }
+
+    public void log() {
+        analogPressurePub.set(getPressure());
+        digitalPressurePub.set(getPressureSwitch());
     }
 
     /**

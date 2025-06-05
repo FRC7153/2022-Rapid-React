@@ -4,11 +4,9 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveBase;
-import frc.robot.utility.Dashboard;
 
 public class TeleopDriveCommand extends Command {
     private final DriveBase drive;
-    private final Dashboard dashboard;
     private final Supplier<Double> ySupplier;
     private final Supplier<Double> xSupplier;
     private final Supplier<Double> rotSupplier;
@@ -23,13 +21,11 @@ public class TeleopDriveCommand extends Command {
      */
     public TeleopDriveCommand(
         DriveBase drive, 
-        Dashboard dashboard,
         Supplier<Double> ySupplier, 
         Supplier<Double> xSupplier,
         Supplier<Double> rotSupplier
     ) {
         this.drive = drive;
-        this.dashboard = dashboard;
         this.ySupplier = ySupplier;
         this.xSupplier = xSupplier;
         this.rotSupplier = rotSupplier;
@@ -48,7 +44,7 @@ public class TeleopDriveCommand extends Command {
             ySupplier.get(),
             xSupplier.get(),
             rotSupplier.get(),
-            dashboard.getFieldOrientedSwitch()
+            drive.getFieldOrientedInput()
         );
     }
 

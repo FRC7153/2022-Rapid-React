@@ -6,12 +6,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Shooter;
-import frc.robot.utility.Dashboard;
+import frc.robot.utility.Limelight;
 import frc.robot.utility.Regressions;
 
 public class ShootCommand extends Command {
     private final Shooter shooter;
-    private final Dashboard dashboard;
+    private final Limelight limelight;
 
     private double limelightDistanceAvg; // Average distance during each shot
     private boolean hasSeenTagsYet; // Whether the limelight has seen tags since command initialized
@@ -24,11 +24,10 @@ public class ShootCommand extends Command {
      * This should be done when the robot is stationary!
      * If no limelight targets are seen, defaults to a slow speed.
      * @param shooter The shooter subsystem
-     * @param dashboard The dashboard
      */
-    public ShootCommand(Shooter shooter, Dashboard dashboard) {
+    public ShootCommand(Shooter shooter) {
         this.shooter = shooter;
-        this.dashboard = dashboard;
+        this.limelight = shooter.getLimelight();
 
         addRequirements(shooter);
     }
@@ -43,7 +42,7 @@ public class ShootCommand extends Command {
     private double calculateShootStrategy(double distance) {
         switch (strategy) {
             case -1: return ShooterConstants.kSHOOT_LOW_SPEED;
-            case 0: return dashboard.getManualShootVelocity();
+            case 0: return shooter.getManualShootVelocity();
             case 3: return Regressions.TARGET_REGRESSION_V3(distance);
             case 4: return Regressions.TARGET_REGRESSION_V4(distance);
             case 5: return Regressions.TARGET_REGRESSION_V5(distance);
@@ -61,10 +60,10 @@ public class ShootCommand extends Command {
     @Override
     public void initialize() {
         // Get initial limelight reading
-        limelightDistanceAvg = shooter.limelight.getDistanceToTrashCan();
+        limelightDistanceAvg = limelight.getDistanceToTrashCan();
         limelightDistanceAvg = MathUtil.clamp(limelightDistanceAvg, 0.0, 4.0); // safety
 
-        if (!shooter.limelight.seesTags() || !shooter.limelight.isAlive()) {
+        if (!limelight.seesTags() || !limelight.isAlive()) {
             // No targets
             DriverStation.reportWarning("Shooting without any limelight targets!", false);
             hasSeenTagsYet = false;
@@ -79,16 +78,16 @@ public class ShootCommand extends Command {
         shooter.setIndexerState(false);
 
         // Get shoot strategy
-        strategy = dashboard.getShootStrategy();
+        strategy = shooter.getShootStrategy();
     }
 
     @Override
     public void execute() {
         // Get new measurement
-        double dist = shooter.limelight.getDistanceToTrashCan();
+        double dist = limelight.getDistanceToTrashCan();
         dist = MathUtil.clamp(dist, 0.0, 4.0); // safety
 
-        if (shooter.limelight.seesTags() && shooter.limelight.isAlive()) {
+        if (limelight.seesTags() && limelight.isAlive()) {
             // This is a good measurement
             if (!hasSeenTagsYet) {
                 // This is the first measurement

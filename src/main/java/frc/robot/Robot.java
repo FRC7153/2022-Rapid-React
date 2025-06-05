@@ -23,12 +23,14 @@ public class Robot extends TimedRobot {
     // Do not allow the mecanum drive base to be controlled through the Shuffleboard sendable
     // while in Test mode:
     enableLiveWindowInTest(false);
+
+    // Log on custom interval
+    addPeriodic(m_robotContainer::refreshDashboard, 0.1, 0.001); // Every 100 ms
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    m_robotContainer.refreshDashboard();
   }
 
   @Override

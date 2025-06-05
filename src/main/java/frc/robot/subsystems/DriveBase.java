@@ -11,11 +11,16 @@ import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.BooleanEntry;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.DriveBaseConstants;
 import frc.robot.Constants.HardwareConstants;
+import frc.robot.utility.MecanumDriveSendable;
 
 /**
  * The subsystem for driving the robot.
@@ -28,11 +33,15 @@ public class DriveBase implements Subsystem {
     private final SparkMax wheel_rr = new SparkMax(HardwareConstants.kRR_DRIVE_CAN, MotorType.kBrushless);
 
     // Drive
-    private final MecanumDrive mecDrive;
+    private final MecanumDriveSendable mecDrive;
     private double maxSpeed = DriveBaseConstants.kSLOW_MAX_SPEED;
 
     // IMU
     private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
+
+    // Telemetry
+    private final StringPublisher gyroPub;
+    private final BooleanEntry fieldOrientedEntry;
 
     /**
      * Instantiate and config a new DriveBase subsystem.
@@ -48,8 +57,19 @@ public class DriveBase implements Subsystem {
         wheel_rl.configure(invertedConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Init drive base
-        mecDrive = new MecanumDrive(wheel_fl, wheel_rl, wheel_fr, wheel_rr);
+        mecDrive = new MecanumDriveSendable(
+          () -> Units.degreesToRadians(getYaw()), wheel_fl, wheel_rl, wheel_fr, wheel_rr);
 
+        // Init telemetry
+        NetworkTable nt = NetworkTableInstance.getDefault().getTable("dashboard").getSubTable("drive");
+
+        gyroPub = nt.getStringTopic("gyro").publish();
+        fieldOrientedEntry = nt.getBooleanTopic("fieldOriented").getEntry(true);
+        fieldOrientedEntry.set(true);
+
+        SmartDashboard.putData("MecanumDrive", mecDrive);
+
+        // Init subsystem
         register();
     }
 
@@ -80,6 +100,10 @@ public class DriveBase implements Subsystem {
     public void periodic() {
         // This will prevent warnings if drive methods aren't being called periodically
         mecDrive.feedWatchdog();
+    }
+
+    public void log() {
+        gyroPub.set(prettyPrintGyro());
     }
 
     /**
@@ -121,9 +145,10 @@ public class DriveBase implements Subsystem {
     }
 
     /**
-     * @return A sendable mecanum drive object, for telemetry.
+     * Gets the value of the field oriented switch on the dashboard, supplied by the user.
+     * @return true if field oriented.
      */
-    public Sendable getMecanumSendable() {
-        return mecDrive;
+    public boolean getFieldOrientedInput() {
+        return fieldOrientedEntry.get();
     }
 }

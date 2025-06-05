@@ -20,20 +20,22 @@ import frc.robot.utility.PDH;
 
 public class RobotContainer {
   // Subsystems
-  private DriveBase drive = new DriveBase();
-  private Intake intake = new Intake();
-  private Shooter shooter = new Shooter();
-  //private Climber climber = new Climber();
+  private final DriveBase drive = new DriveBase();
+  private final Intake intake = new Intake();
+  private final Shooter shooter = new Shooter();
+  //private final Climber climber = new Climber();
 
   // Misc hardware
-  private PDH pdh = new PDH();
+  private final PDH pdh = new PDH();
 
   // Controllers and dashboard
-  private CommandXboxController driveController = new CommandXboxController(0);
-  private Dashboard dashboard = new Dashboard(drive, intake, shooter, pdh);
+  private final CommandXboxController driveController = new CommandXboxController(0);
 
   // Constructor
   public RobotContainer() {
+    // Init elastic
+    Dashboard.hostElasticLayoutFolder();
+    
     // Set default commands
     intake.initDefaultCommand();
     shooter.initDefaultCommand();
@@ -47,7 +49,6 @@ public class RobotContainer {
     // Drive Bindings
     drive.setDefaultCommand(new TeleopDriveCommand(
       drive,
-      dashboard,
       () -> - driveController.getLeftY(),
       () -> -driveController.getLeftX(),
       () -> driveController.getRightX()
@@ -65,7 +66,7 @@ public class RobotContainer {
     driveController.y().toggleOnFalse(new InstantCommand(() -> climber.setClimberState(false), climber));*/
 
     // Shoot Bindings
-    driveController.rightTrigger().whileTrue(new ShootCommand(shooter, dashboard));
+    driveController.rightTrigger().whileTrue(new ShootCommand(shooter));
 
     // Sprint Bindings
     driveController.leftStick().onTrue(new InstantCommand(() -> drive.setMaxSpeed(DriveBaseConstants.kFAST_MAX_SPEED)));
@@ -73,7 +74,7 @@ public class RobotContainer {
 
     // Limelight snapshot bindings
     driveController.a()
-      .onTrue(new InstantCommand(shooter.limelight::takeSnapshot));
+      .onTrue(new InstantCommand(shooter.getLimelight()::takeSnapshot));
   }
 
   // Auto command
@@ -85,7 +86,11 @@ public class RobotContainer {
    * Refreshes the dashboard's values. Call this periodically.
    */
   public void refreshDashboard() {
-    dashboard.periodic();
+    drive.log();
+    intake.log();
+    shooter.log();
+
+    pdh.log();
   }
 }
 

@@ -3,10 +3,13 @@ package frc.robot.utility;
 import java.util.UUID;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.SendableCameraWrapper;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.utility.LimelightHelpers.PoseEstimate;
 
@@ -20,6 +23,9 @@ public class Limelight {
     private final String name;
     private final DoubleSubscriber heartbeatSub;
 
+    // Telemetry
+    private final BooleanPublisher isAlive;
+
     /**
      * Instantiates a new LimeLight.
      * @param name The name of the limelight.
@@ -32,6 +38,12 @@ public class Limelight {
 
         // Enforce pipeline 0
         LimelightHelpers.setPipelineIndex(this.name, 0);
+
+        // Init telemetry
+        nt = NetworkTableInstance.getDefault().getTable("dashboard").getSubTable("limelights").getSubTable(this.name);
+        isAlive = nt.getBooleanTopic("IsAlive").publish();
+
+        SmartDashboard.putData(this.name, SendableCameraWrapper.wrap(this.name, getURL()));
     }
 
     /**
@@ -112,7 +124,11 @@ public class Limelight {
     /**
      * @return A URL for viewing this camera stream
      */
-    public String getURL() {
+    public final String getURL() {
         return String.format("http://%s.local:5800/", name);
+    }
+
+    public void log() {
+      isAlive.set(isAlive());
     }
 }

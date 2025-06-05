@@ -29,7 +29,7 @@ public class AutoCenterCommand extends Command {
         drive.driveOpenLoop(
             0.0, 
             0.0, 
-            0.025 * shooter.limelight.getAngleToTrashCan(), 
+            0.025 * shooter.getLimelight().getAngleToTrashCan(), 
             false
         );
     }
